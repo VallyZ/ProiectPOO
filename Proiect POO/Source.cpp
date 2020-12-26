@@ -328,6 +328,85 @@ public:
 		f.close();
 	}
 
+	string& operator[](int x) { //operator []
+		if (x >= 0 && x < nrZile) {
+			return zi[x];
+		}
+		else {
+			cout << "Ziua introdusa nu exista." << endl;
+		}
+	}
+
+	Film operator+(float x) {//operator + la stanga
+		float z = 24 - start;
+		if (x >= 0 && x <= z) {
+			Film f = *this;
+			f.start += x;
+			return f;
+		}
+		else {
+			cout << "Adunarea excede ora 24" << endl;
+			return *this;
+		}
+	}
+
+	Film operator++() {//preincrementare
+		if (start + 1 < 25) {
+			this->start++;
+			return *this;
+		}
+		else {
+			cout << "Adunarea excede ora 24" << endl;
+			return *this;
+		}
+	}
+
+	Film operator++(int i) {//postincrementare
+		if (start + 1 < 25) {
+			Film f = *this;
+			this->start++;
+			return f;
+		}
+		else {
+			cout << "Adunarea excede ora 24" << endl;
+			Film f = *this;
+			return f;
+		}
+	}
+
+	Film operator--() {//predencrementare
+		if (start - 1 > 0) {
+			this->start--;
+			return *this;
+		}
+		else {
+			cout << "Scaderea excede ora 0" << endl;
+			return *this;
+		}
+	}
+
+	Film operator--(int i) {//postdecrementare
+		if (start - 1 > 0) {
+			Film f = *this;
+			this->start--;
+			return f;
+		}
+		else {
+			cout << "Scaderea excede ora 0" << endl;
+			Film f = *this;
+			return f;
+		}
+	}
+
+	explicit operator int() {//cast explicit
+		return filmId;
+	}
+
+	bool operator!() { //operator !
+		return nrZile > 0;
+	}
+
+
 	/*
 	void getAll() {
 		cout << "Id: " << getId() << endl;
@@ -344,9 +423,48 @@ public:
 	friend ofstream& operator<<(ofstream&, Film);
 	friend istream& operator>>(istream&, Film&);
 	friend ifstream& operator>>(ifstream&, Film&);
-
+	friend Film operator+(float, Film);
+	friend bool operator<=(const Film& x, const Film& y) //operator<
+	{
+		if (x.filmId <= y.filmId) {
+			cout << "1<=2" << endl;
+			return true;
+		}
+		else {
+			cout << "2<=1" << endl;
+			return false;
+		}
+	}
+	friend bool operator==(const Film& x, const Film& y) //operator==
+	{
+		if (x.nrZile == y.nrZile) {
+			cout << "Numar de zile egale." << endl;
+			return true;
+		}
+		else {
+			cout << "Numar de zile inegale." << endl;
+			return false;
+		}
+	}
 	//////////////////////////////////FA SETTERE PENTRU TOATE ATRIBUTELE////////////////////////
 };
+
+
+
+Film operator+(float x, Film f) {//operator + la dreapta
+	float z = 24 - f.start;
+	if (x >= 0 && x <= z) {
+		//Film f = *this;
+		f.start = f.start + x;
+		return f;
+	}
+	else {
+		cout << "Adunarea excede ora 24" << endl;
+		return f;
+		
+	}
+}
+
 
 ostream& operator<<(ostream& o, Film f) {
 	o << endl;
@@ -650,20 +768,6 @@ int main() {
 	//////////////////////////////////////TESTE CLASA FILM////////////////////////////////
 	string x[] = { "Luni", "Marti", "Joiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii" };
 	string y[] = { "Luni", "Marti" };
-	//cout << x->length() << endl;
-	//cout << sizeof(x[0]) << endl;
-	//cout << sizeof(x[1]) << endl;
-	//cout << sizeof(x[2]) << endl;
-	//cout << sizeof(x) / sizeof(x[0]) << endl;
-
-	//Film z;
-
-	Film a(1, "Venom", 2.0f, 3, x, 10.00f);
-	//cout << a;
-	//a.setZi(y, 2);
-	//cout << a;
-	//cout << z;
-	//Film b = a;
 	Film c(1, "Uganda in action", 2.0f, 2, y, 10.00f);
 	Film d(2, "Venezuela", 2.0f, 3, x, 10.00f);
 
@@ -779,106 +883,44 @@ int main() {
 	f.close();
 	*/
 
-
+	/*
 	map<int,Film>Map1 = citire1();
 
 	for (int i = 0; i < Map1.size(); i++) {
 		cout << Map1[i] << endl;
-	}
+	}*/
 
-	//cout << endl;
-	//cout << Map.size() << endl;
-	
-	//Film e;// , u;
-	//e.deserialize();
-	//cout << e << endl;
-//	u.deserialize();
-	//cout << u << endl;
-	//arataFilme();
+	//string zi = a[12];//operator []
+	//cout << zi << endl;
+	//cout << a << endl;
+	////a = 15 + a;
+	//cout << a << endl;
+//	a = a + 2;
+//	cout << a << endl;
+//	a = a + 1;
+//	cout << a << endl;
+//	a = 1 + a;
+//	cout << a << endl;
 
-	//cout << sizeof(u) << endl;
+	//a = ++a;
+	//cout << a << endl;
+	//a = a++;
+	//cout << a << endl;
+	//a = --a;
+	//cout << a << endl;
+	//a = a--;
+	//cout << a << endl;
 
-	/*
-	fstream p("Film.bin", ios::_Nocreate | ios::binary | ios::in);
-	p.seekg(0, ios::beg);
-	//cout << p.tellp() << endl;
-	int oo = 0;
-	p.read((char*)&oo, sizeof(int));
-	p.close();
-	cout << "id: " << oo << endl;
+	//int ok = (int)b; //cast explicit
+	//cout << ok << endl;
+	//b <= a;
+	//if (!a) {
+	//	cout << "Are zile" << endl;
+	//}
+	//else {
+	//	cout << "Nu are zile" << endl;
+	//}
 
-	fstream w("Film.bin", ios::_Nocreate | ios::binary | ios::in);
-	w.seekg(907);
-	int ok = 0;
-	w.read((char*)&ok, sizeof(int));
-	w.close();
-	cout << "id: " << ok << endl;
-	*/
+	//a == b;
 
-	//fstream xz("Film.bin", ios::_Nocreate | ios::binary | ios::in);
-	////nrart((xz.open("Film.bin"),ios::binary), sizeof(Film));
-	//xz.seekg(0, ios::beg);
-	//xz.tellg();
-	//cout << xz.tellg() << endl;
-	//xz.seekg(0, ios::end);
-	//xz.tellg();
-	//cout << xz.tellg() << endl;
-	//cout << xz.tellg() / sizeof(Film) << endl;
-	//xz.seekg(0, ios::beg);
-	////cout << xz.tellg() << endl;
-	//xz.close();
-	
-	/*string x[] = { "Luni", "Marti", "Joi" };
-	cout << sizeof(x) / sizeof(x[1]) << endl;
-	ofstream f("test.bin", ios::binary);
-	for (int i = 0; i < 3; i++) {
-		f.write((char*)&x[i], sizeof(x[i]));
-	}
-	f.close();
-
-	ifstream g("test.bin", ios::binary);
-	//string y[] = { "","","" };
-	string* y = new string[3];
-	for (int i = 0; i < 3; i++) {
-
-		g.read((char*)&y[i], sizeof(y[i]));
-		//int len = 0;
-		//g.read((char*)&len, sizeof(len));
-		//char* aux = new char[len];
-		//g.read(aux, len);
-		//y[i] = aux;
-		//cout << y[i] << endl;
-
-
-	}
-	//delete[] y;
-	for (int i = 0; i < 3; i++) {
-		cout << y[i] << endl;
-	}
-	g.close();*/
-
-
-	//cin >> z;
-	//ofstream f;
-	//f.open("FilmTEXT.txt");
-	//f << z;
-	//f.close();
-	//FILE* P;
-	//int size = sizeof(float);
-	//float start = 0;
-	//fstream q("FilmTEXT.txt", ios::_Nocreate | ios::in);
-	//cout << "Delpasament in fisier: " << q.tellg() << endl;
-	//q.seekg(0, ios::end);
-	//cout << "Delpasament in fisier: " << q.tellg() << endl;
-	//cout << "Delpasament in fisier: " << q.tellg() /sizeof(a) << endl;
-	//q.read((char*)&start, size);
-	//cout << start << endl;
-	//fopen_s(&P, "FilmTEXT.txt", "r");
-	//cout << nrart(P, a);
-	//cout << sizeof(Film) << endl;
-	//cout << sizeof(a) << endl;
-	//cout << sizeof(c) << endl;
-
-
-
-}
+}   

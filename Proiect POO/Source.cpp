@@ -248,6 +248,33 @@ public:
 		cout << f.tellp() << endl;
 		f.close();
 	}
+	void serialize1() { // Scrie in fisier binar un obiect.
+		ofstream f("Film1.bin", ios::app | ios::binary);
+		//f.seekp(0, ios::end);
+		cout << f.tellp() << endl;
+		f.write((char*)&filmId, sizeof(filmId));
+		f.write((char*)&id, sizeof(id));
+		int len = 101;
+		f.write((char*)&len, sizeof(len));
+		f.write(nume.c_str(), len);
+		f.write((char*)&durata, sizeof(durata));
+		f.write((char*)&nrZile, sizeof(nrZile));
+		int len1 = 101;
+		for (int i = 0; i < 7; i++) {
+			if (zi[i].length() != 0 && zi[i].length() < 9) {
+				f.write((char*)&len1, sizeof(len1));
+				f.write(zi[i].c_str(), len1);
+			}
+			else {
+				f.write((char*)&len1, sizeof(len1));
+				f.write("",len1);
+			}
+			
+		}
+		f.write((char*)&start, sizeof(start));
+		cout << f.tellp() << endl;
+		f.close();
+	}
 
 	void deserialize() {
 		ifstream f("Film.bin", ios::binary);
@@ -266,6 +293,36 @@ public:
 		for (int i = 0; i < nrZile; i++) {
 			f.read((char*)&zi1[i], sizeof(zi1[i])); //ca sa functioneze are nevoie sa stearga ceva alocat.
 			zi[i] = zi1[i];
+		}
+		f.read((char*)&start, sizeof(start));
+		f.close();
+	}
+	void deserialize1() {
+		ifstream f("Film1.bin", ios::binary);
+		f.read((char*)&filmId, sizeof(filmId));
+		f.read((char*)&id, sizeof(id));
+		int len = 0;
+		f.read((char*)&len, sizeof(len));
+		char* aux = new char[len];
+		f.read(aux, len);
+		nume = aux;
+		f.read((char*)&durata, sizeof(durata));
+		f.read((char*)&nrZile, sizeof(nrZile));
+		delete[] zi;
+		zi = new string[nrZile];
+		string* zi1 = new string[nrZile];
+		for (int i = 0; i < nrZile; i++) {
+			int len1 = 0;
+			f.read((char*)&len1, sizeof(len1));
+			char* aux1 = new char[len1];
+			f.read(aux1, len1);
+			zi[i] = aux1;
+		}
+		for (int i = nrZile; i < 7; i++) {
+			int len1 = 0;
+			f.read((char*)&len1, sizeof(len1));
+			char* aux1 = new char[len1];
+			f.read(aux1, len1);
 		}
 		f.read((char*)&start, sizeof(start));
 		f.close();
@@ -528,12 +585,65 @@ map<int,Film> citire() {
 	f.close();
 }
 
+map<int, Film> citire1() {
+	std::map<int, Film> Map;
+	int i = 0;
+	ifstream f("Film1.bin", ios::binary);
+	int x = f.tellg();
+	f.seekg(0, ios::end);
+	int y = f.tellg();
+	f.seekg(0, ios::beg);
+	while (x != y) {
+		int filmId = 0; int id = 0; int nrZile = 0;
+		string nume = "";
+		float durata = 0; float start = 0;
+
+		f.read((char*)&filmId, sizeof(filmId));
+		f.read((char*)&id, sizeof(id));
+		int len = 0;
+		f.read((char*)&len, sizeof(len));
+		char* aux = new char[len];
+		f.read(aux, len);
+		nume = aux;
+		f.read((char*)&durata, sizeof(durata));
+		f.read((char*)&nrZile, sizeof(nrZile));
+		string* zi = new string[nrZile];
+		for (int i = 0; i < nrZile; i++) {
+			int len1 = 0;
+			f.read((char*)&len1, sizeof(len1));
+			char* aux1 = new char[len1];
+			f.read(aux1, len1);
+			zi[i] = aux1;
+		}
+		for (int i = nrZile; i < 7; i++) {
+			int len1 = 0;
+			f.read((char*)&len1, sizeof(len1));
+			char* aux1 = new char[len1];
+			f.read(aux1, len1);
+		}
+		f.read((char*)&start, sizeof(start));
+
+		if (id > 0) {
+			Film placeHolder(id, nume, durata, nrZile, zi, start, filmId);
+			if (placeHolder.getFilmId() > 0) {
+				Map[i] = placeHolder;
+				i++;
+			}
+		}
+		x = f.tellg();
+	}
+	return Map;
+	f.close();
+}
+
 void stergeBazaDateFilme() {
 	ofstream f("Film.bin", ios::trunc | ios::binary);
 	f.close();
 }
-
-//merge?
+void stergeBazaDateFilme1() {
+	ofstream f("Film1.bin", ios::trunc | ios::binary);
+	f.close();
+}
 
 int main() {
 	/*
@@ -598,17 +708,83 @@ int main() {
 	//	i++;
 	//	g >> n;
 	//}*/
-
+	
 	string x[] = { "Luni", "Sambata", "Duminica" };
+	string y[] = { "Luni", "Sambata", "Duminica", "Sambata" };
 	Film a(2, "Batman", 2.0f, 3, x, 10.00f);
-	a.serialize();
-	a.serialize();
-	map<int,Film>Map1 = citire();
+	Film b(3, "Harap Alb si cei 7 pitici", 2.0f, 4, y, 5.00f);
+	//stergeBazaDateFilme1();
+	//a.serialize1();
+	//b.serialize1();
+	//map<int,Film>Map1 = citire();
+
+	//for (int i = 0; i < Map1.size(); i++) {
+	//	cout << Map1[i] << endl;
+	//}
+
+	//a.serialize1();
+//	Film e;
+	//e.deserialize1();
+	//cout << e << endl;
+	
+/*
+	ifstream f("Film1.bin", ios::binary);
+	int id = 0;
+	int id1 = 0;
+	int len = 0;
+	string r = "";
+	f.seekg(0, ios::beg);
+	int p = f.tellg();
+	cout << p << endl;
+	f.read((char*)&id, sizeof(id));
+	f.read((char*)&id1, sizeof(id1));
+	f.read((char*)&len, sizeof(len));
+	char* aux = new char[len];
+	f.read(aux, len);
+	r = aux;
+	cout << "Id film: " << id << endl;
+	cout << "Nume: " << r << endl;
+	f.seekg(0, ios::end);
+	int u = f.tellg();
+	cout << u << endl;
+	//int z = u / 2;
+	//cout << "Marime obiect: " << z << endl;
+	f.seekg(1*860);
+	f.read((char*)&id, sizeof(id));
+	f.read((char*)&id1, sizeof(id1));
+	f.read((char*)&len, sizeof(len));
+	char* aux1 = new char[len];
+	f.read(aux1, len);
+	r = aux1;
+	cout << "Id film: " << id << endl;
+	cout << "Nume: " << r << endl;
+	f.seekg(2*860);
+	f.read((char*)&id, sizeof(id));
+	f.read((char*)&id1, sizeof(id1));
+	f.read((char*)&len, sizeof(len));
+	char* aux2 = new char[len];
+	f.read(aux2, len);
+	r = aux2;
+	cout << "Id film: " << id << endl;
+	cout << "Nume: " << r << endl;
+	f.seekg(3*860);
+	f.read((char*)&id, sizeof(id));
+	f.read((char*)&id1, sizeof(id1));
+	f.read((char*)&len, sizeof(len));
+	char* aux3 = new char[len];
+	f.read(aux3, len);
+	r = aux3;
+	cout << "Id film: " << id << endl;
+	cout << "Nume: " << r << endl;
+	f.close();
+	*/
+
+
+	map<int,Film>Map1 = citire1();
 
 	for (int i = 0; i < Map1.size(); i++) {
 		cout << Map1[i] << endl;
 	}
-
 
 	//cout << endl;
 	//cout << Map.size() << endl;
@@ -702,7 +878,6 @@ int main() {
 	//cout << sizeof(Film) << endl;
 	//cout << sizeof(a) << endl;
 	//cout << sizeof(c) << endl;
-
 
 
 

@@ -533,6 +533,7 @@ void stergeBazaDateFilme() {
 	f.close();
 }
 
+//merge?
 
 int main() {
 	/*

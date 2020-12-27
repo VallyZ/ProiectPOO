@@ -17,7 +17,6 @@ private:
 	int nrZile;
 	string* zi;
 	float start;//ora de incepere 12.00;
-	//vector <Film> aa;
 	static int numarFilme;
 
 public:
@@ -28,9 +27,6 @@ public:
 		nrZile = 0;
 		zi = nullptr;
 		start = 0.0;
-
-		//aa.resize(1, *this);
-		//aa.push_back(*this);
 	}
 
 	Film(int id, string nume, float durata, int nrZile, string* zi, float start) : filmId(++numarFilme) {
@@ -42,7 +38,6 @@ public:
 			this->durata = durata;
 		}
 		if (nrZile > 0 && zi != nullptr) {
-			//this->zi = new string[sizeof(zi) / sizeof(zi[0])];
 			this->zi = new string[nrZile];
 			for (int i = 0; i < nrZile; i++) {
 				this->zi[i] = zi[i];
@@ -67,7 +62,6 @@ public:
 			this->durata = durata;
 		}
 		if (nrZile > 0 && zi != nullptr) {
-			//this->zi = new string[sizeof(zi) / sizeof(zi[0])];
 			this->zi = new string[nrZile];
 			for (int i = 0; i < nrZile; i++) {
 				this->zi[i] = zi[i];
@@ -229,7 +223,7 @@ public:
 	void forteazaId(int x) {
 		const_cast<int&>(filmId) = x;
 	}
-
+/*
 	void serialize() { // Scrie in fisier binar un obiect.
 		ofstream f("Film.bin", ios::app | ios::binary);
 		//f.seekp(0, ios::end);
@@ -248,6 +242,7 @@ public:
 		cout << f.tellp() << endl;
 		f.close();
 	}
+	*/
 	void serialize1() { // Scrie in fisier binar un obiect.
 		ofstream f("Film1.bin", ios::app | ios::binary);
 		//f.seekp(0, ios::end);
@@ -275,7 +270,34 @@ public:
 		cout << f.tellp() << endl;
 		f.close();
 	}
+	void serialize1(int x) { // Scrie in fisier binar un obiect.
+		fstream f("Film1.bin", ios::out | ios::in | ios::binary);
+		f.seekp(x);
+		cout << f.tellp() << endl;
+		f.write((char*)&filmId, sizeof(filmId));
+		f.write((char*)&id, sizeof(id));
+		int len = 101;
+		f.write((char*)&len, sizeof(len));
+		f.write(nume.c_str(), len);
+		f.write((char*)&durata, sizeof(durata));
+		f.write((char*)&nrZile, sizeof(nrZile));
+		int len1 = 101;
+		for (int i = 0; i < 7; i++) {
+			if (zi[i].length() != 0 && zi[i].length() < 9) {
+				f.write((char*)&len1, sizeof(len1));
+				f.write(zi[i].c_str(), len1);
+			}
+			else {
+				f.write((char*)&len1, sizeof(len1));
+				f.write("", len1);
+			}
 
+		}
+		f.write((char*)&start, sizeof(start));
+		cout << f.tellp() << endl;
+		f.close();
+	}
+	/*
 	void deserialize() {
 		ifstream f("Film.bin", ios::binary);
 		f.read((char*)&filmId, sizeof(filmId));
@@ -296,9 +318,10 @@ public:
 		}
 		f.read((char*)&start, sizeof(start));
 		f.close();
-	}
-	void deserialize1() {
-		ifstream f("Film1.bin", ios::binary);
+	}*/
+	void deserialize1(int x) {
+		fstream f("Film1.bin", ios::out | ios::in | ios::binary);
+		f.seekg(x);
 		f.read((char*)&filmId, sizeof(filmId));
 		f.read((char*)&id, sizeof(id));
 		int len = 0;
@@ -663,7 +686,7 @@ void arataFilme() {
 		}
 	}
 }
-
+/*
 map<int,Film> citire() {
 	std::map<int, Film> Map;
 	int i = 0;
@@ -702,8 +725,8 @@ map<int,Film> citire() {
 	return Map;
 	f.close();
 }
-
-map<int, Film> citire1() {
+*/
+map<int, Film> citire1() { // afiseaza toate filmele din fisier
 	std::map<int, Film> Map;
 	int i = 0;
 	ifstream f("Film1.bin", ios::binary);
@@ -754,13 +777,184 @@ map<int, Film> citire1() {
 	f.close();
 }
 
+int* returnAtrLoc() { // creaza vector cu locatiile fiecarui atribut al clasei Film
+	ifstream f("Film1.bin", ios::binary);
+	int filmId = 0; int id = 0; int nrZile = 0;
+	string nume = "";
+	float durata = 0; float start = 0;
+	int locFilmId = 0; int locId = 0; int locNume = 0; int locDurata = 0; int locNrZile = 0; int locZi[] = { 0,0,0,0,0,0,0 }; int locStart = 0;
+	locFilmId = f.tellg();
+	f.read((char*)&filmId, sizeof(filmId));
+	locId = f.tellg();
+	f.read((char*)&id, sizeof(id));
+	locNume = f.tellg();
+	int len = 0;
+	f.read((char*)&len, sizeof(len));
+	char* aux = new char[len];
+	f.read(aux, len);
+	nume = aux;
+	locDurata = f.tellg();
+	f.read((char*)&durata, sizeof(durata));
+	locNrZile = f.tellg();
+	f.read((char*)&nrZile, sizeof(nrZile));
+	string* zi = new string[nrZile];
+	for (int i = 0; i < nrZile; i++) {
+		int len1 = 0;
+		locZi[i] = f.tellg();
+		f.read((char*)&len1, sizeof(len1));
+		char* aux1 = new char[len1];
+		f.read(aux1, len1);
+		zi[i] = aux1;
+	}
+	for (int i = nrZile; i < 7; i++) {
+		int len1 = 0;
+		locZi[i] = f.tellg();
+		f.read((char*)&len1, sizeof(len1));
+		char* aux1 = new char[len1];
+		f.read(aux1, len1);
+	}
+	locStart = f.tellg();
+	f.read((char*)&start, sizeof(start));
+	static int returnDate[] = { locFilmId, locId, locNume, locDurata, locNrZile, locZi[0], locZi[1], locZi[2], locZi[3], locZi[4], locZi[5], locZi[6], locStart };
+	f.close();
+	return returnDate;
+}
+
+int nrFilme() {
+	ifstream f("Film1.bin", ios::binary);
+	f.seekg(0, ios::end);
+	int x = f.tellg();
+	int z = x / 860;
+	f.close();
+	return z;
+}
+
+int* arrIdFilme() { // return array cu id-urile filmelor
+	int* arrIdFilme = new int[nrFilme()];
+	const int nrf = nrFilme();
+	//int arrIdFilme[nrf];
+	ifstream f("Film1.bin", ios::binary);
+	for (int i = 0; i < nrf; i++) {
+		int x = 0;
+		f.seekg(i * 860);
+		f.read((char*)&x, sizeof(x));
+		arrIdFilme[i] = x;
+	}
+	f.close();
+	return arrIdFilme;
+}
+
+int locFilmCuId() {
+	ifstream h("Film1.bin", ios::binary);
+	int x1 = 0;
+	int locatie = 0;
+	int gasit = 0;
+	int* arr = arrIdFilme();
+	cout << "Exista urmatoarele filme cu Id: " << endl;
+	for (int i = 0; i < nrFilme(); i++) {
+		cout << arr[i] << " ";
+	}
+	cout << endl;
+	cout << "Introdu id-ul filmului pe care vrei sa il gasesti: " << endl;
+	cin >> x1;
+	for (int i = 0; i < nrFilme(); i++) {
+		int id = 0;
+		h.seekg((long long)i * 860);
+		h.read((char*)&id, sizeof(id));
+		if (id == x1) {
+			locatie = h.tellg();
+			locatie -= 4;
+			gasit = 1;
+			break;
+		}
+	}h.close();
+	if (gasit != 1) {
+		cout << "Id-ul introdus nu exista" << endl;
+	}
+	else {
+		return locatie;
+	}
+}
+
+void afiseazaFilmCuId() {
+	//if (x > 0) {
+		int z = locFilmCuId();
+		int* ret = returnAtrLoc();
+		Film o;
+		o.deserialize1(z);
+		cout << o << endl;
+		/*
+		ifstream f("Film1.bin", ios::binary);
+		int filmId = 0; int id = 0; int nrZile = 0;
+		string nume = "";
+		float durata = 0; float start = 0;
+		f.seekg(ret[0]);
+		f.read((char*)&filmId, sizeof(filmId));
+		f.seekg(ret[1]);
+		f.read((char*)&id, sizeof(id));
+		int len = 0;
+		f.seekg(ret[2]);
+		f.read((char*)&len, sizeof(len));
+		char* aux = new char[len];
+		f.read(aux, len);
+		nume = aux;
+		f.seekg(ret[3]);
+		f.read((char*)&durata, sizeof(durata));
+		f.seekg(ret[4]);
+		f.read((char*)&nrZile, sizeof(nrZile));
+		string* zi = new string[nrZile];
+		for (int i = 0; i < nrZile; i++) {
+			int len1 = 0;
+			f.seekg(ret[5 + i]);
+			f.read((char*)&len1, sizeof(len1));
+			char* aux1 = new char[len1];
+			f.read(aux1, len1);
+			zi[i] = aux1;
+		}
+		for (int i = nrZile; i < 7; i++) {
+			int len1 = 0;
+			f.seekg(ret[5 + nrZile]);
+			f.read((char*)&len1, sizeof(len1));
+			char* aux1 = new char[len1];
+			f.read(aux1, len1);
+		}
+		f.seekg(ret[12]);
+		f.read((char*)&start, sizeof(start));
+		f.close();
+		cout << filmId << endl;
+		cout << id << endl;
+		cout << nume << endl;
+		cout << durata << endl;
+		cout << nrZile << endl;
+		cout << start << endl;
+		for (int i = 0; i < 7; i++) {
+			if (zi[i].length() != 0 && zi[i].length() < 9) {
+				cout << zi[i] << endl;
+			}
+		}
+		cout << start << endl;
+	}
+	else {
+		cout << "Nu exista filmul cu id: " << x << endl;
+	}*/
+	//}
+}
+/*
 void stergeBazaDateFilme() {
 	ofstream f("Film.bin", ios::trunc | ios::binary);
 	f.close();
 }
+*/
 void stergeBazaDateFilme1() {
 	ofstream f("Film1.bin", ios::trunc | ios::binary);
 	f.close();
+}
+map<int,Film> afiseazaFilme() {
+	map<int, Film>Map1 = citire1();
+	for (int i = 0; i < Map1.size(); i++) {
+		cout << Map1[i] << endl;
+	}
+	return Map1;
 }
 
 int main() {
@@ -817,6 +1011,7 @@ int main() {
 	string y[] = { "Luni", "Sambata", "Duminica", "Sambata" };
 	Film a(2, "Batman", 2.0f, 3, x, 10.00f);
 	Film b(3, "Harap Alb si cei 7 pitici", 2.0f, 4, y, 5.00f);
+	Film c(3, "Cinderella", 1.0f, 4, y, 10.00f);
 	//stergeBazaDateFilme1();
 	//a.serialize1();
 	//b.serialize1();
@@ -882,13 +1077,154 @@ int main() {
 	cout << "Nume: " << r << endl;
 	f.close();
 	*/
-
 	/*
-	map<int,Film>Map1 = citire1();
+	afiseazaFilme();
 
-	for (int i = 0; i < Map1.size(); i++) {
-		cout << Map1[i] << endl;
-	}*/
+	ifstream h("Film1.bin", ios::binary);
+	int x1 = 0;
+	int locatie = 0;
+	int gasit = 0;
+	cout << "Introdu id-ul filmului pe care vrei sa il inlocuiesti: " << endl;
+	cin >> x1;
+	for (int i = 0; i < 3; i++) {
+		int id = 0;
+		h.seekg((long long)i * 860);
+		h.read((char*)&id, sizeof(id));
+		if (id == x1) {
+			locatie = h.tellg();
+			locatie -= 4;
+			gasit = 1;
+			break;
+		}
+	}h.close();
+	if (gasit == 1) {
+		c.serialize1(locatie);
+	}
+	afiseazaFilme();
+	*/
+	afiseazaFilmCuId();
+
+	//int* ret = returnAtrLoc();
+	//for (int i = 0; i < 13; i++) {
+	//	cout << ret[i] << endl;
+	//}
+	//cout << ret[12] << endl;
+
+	//int* ret = arrIdFilme();
+	//for (int i = 0; i < nrFilme(); i++) {
+	//	cout << ret[i] << endl;
+	//}
+	//int h = locFilmCuId();
+	//cout << h << endl;
+	
+	
+
+	//ifstream f("Film1.bin", ios::binary);
+	//int filmId = 0; int id = 0; int nrZile = 0;
+	//string nume = "";
+	//float durata = 0; float start = 0;
+	//f.seekg(ret[0]);
+	//f.read((char*)&filmId, sizeof(filmId));
+	//f.seekg(ret[1]);
+	//f.read((char*)&id, sizeof(id));
+	//int len = 0;
+	//f.seekg(ret[2]);
+	//f.read((char*)&len, sizeof(len));
+	//char* aux = new char[len];
+	//f.read(aux, len);
+	//nume = aux;
+	//f.seekg(ret[3]);
+	//f.read((char*)&durata, sizeof(durata));
+	//f.seekg(ret[4]);
+	//f.read((char*)&nrZile, sizeof(nrZile));
+	//string* zi = new string[nrZile];
+	//for (int i = 0; i < nrZile; i++) {
+	//	int len1 = 0;
+	//	f.seekg(ret[5+i]);
+	//	f.read((char*)&len1, sizeof(len1));
+	//	char* aux1 = new char[len1];
+	//	f.read(aux1, len1);
+	//	zi[i] = aux1;
+	//}
+	//for (int i = nrZile; i < 7; i++) {
+	//	int len1 = 0;
+	//	f.seekg(ret[5+nrZile]);
+	//	f.read((char*)&len1, sizeof(len1));
+	//	char* aux1 = new char[len1];
+	//	f.read(aux1, len1);
+	//}
+	//f.seekg(ret[12]);
+	//f.read((char*)&start, sizeof(start));
+	//f.close();
+	//cout << filmId << endl;
+	//cout << id << endl;
+	//cout << nume << endl;
+	//cout << durata << endl;
+	//cout << nrZile << endl;
+	//cout << start << endl;
+	//for (int i = 0; i < 7; i++) {
+	//	if (zi[i].length() != 0 && zi[i].length() < 9) {
+	//		cout << zi[i] << endl;
+	//	}
+	//}
+	//cout << start << endl;
+
+	//cout << endl;
+
+	//int m = 860;
+	//ifstream q("Film1.bin", ios::binary);
+	//filmId = 0; id = 0; nrZile = 0;
+	//nume = "";
+	//durata = 0; start = 0;
+	//q.seekg(ret[0] + m);
+	//q.read((char*)&filmId, sizeof(filmId));
+	//q.seekg(ret[1] + m);
+	//q.read((char*)&id, sizeof(id));
+	//len = 0;
+	//q.seekg(ret[2] + m);
+	//q.read((char*)&len, sizeof(len));
+	//delete[] aux;
+	//aux = new char[len];
+	//q.read(aux, len);
+	//nume = aux;
+	//q.seekg(ret[3] + m);
+	//q.read((char*)&durata, sizeof(durata));
+	//q.seekg(ret[4] + m);
+	//q.read((char*)&nrZile, sizeof(nrZile));
+	//delete[] zi;
+	//zi = new string[nrZile];
+	//for (int i = 0; i < nrZile; i++) {
+	//	int len1 = 0;
+	//	q.seekg(ret[5 + i] + m);
+	//	q.read((char*)&len1, sizeof(len1));
+	//	char* aux1 = new char[len1];
+	//	q.read(aux1, len1);
+	//	zi[i] = aux1;
+	//}
+	//for (int i = nrZile; i < 7; i++) {
+	//	int len1 = 0;
+	//	q.seekg(ret[5 + nrZile] + m);
+	//	q.read((char*)&len1, sizeof(len1));
+	//	char* aux1 = new char[len1];
+	//	q.read(aux1, len1);
+	//}
+	//q.seekg(ret[12] + m);
+	//q.read((char*)&start, sizeof(start));
+	//q.close();
+	//cout << filmId << endl;
+	//cout << id << endl;
+	//cout << nume << endl;
+	//cout << durata << endl;
+	//cout << nrZile << endl;
+	//cout << start << endl;
+	//for (int i = 0; i < 7; i++) {
+	//	if (zi[i].length() != 0 && zi[i].length() < 9) {
+	//		cout << zi[i] << endl;
+	//	}
+	//}
+	//cout << start << endl;
+
+	//afiseazaFilme();
 
 	//string zi = a[12];//operator []
 	//cout << zi << endl;

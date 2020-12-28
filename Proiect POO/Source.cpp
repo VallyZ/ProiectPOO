@@ -3,7 +3,7 @@
 #include <fstream>
 #include <iomanip>
 #include <map>
-//#include <vector>
+#include <vector>
 using namespace std;
 
 
@@ -1185,6 +1185,129 @@ void stergeBazaDateFilme() {
 }
 */
 
+void resetLocuri() {
+	vector<vector<int>> v1;
+	vector<int> v2;
+	int sizeV1 = 5;
+	int sizeV2 = 10;
+	v1.resize(sizeV1);
+	v2.resize(sizeV2);
+	for (int j = 0; j < v2.size(); j++) {
+		v2[j] = 1;
+	}
+	for (int i = 0; i < v1.size(); i++) {
+		v1[i] = v2;
+	}
+	fstream o("Locuri.bin", ios::in | ios::out | ios::binary);
+	for (int i = 0; i < v1.size(); i++) {
+		for (int j = 0; j < v2.size(); j++) {
+			o.write((char*)&v1[i][j], sizeof(v1[i][j]));
+		}
+	}
+	o.close();
+
+	for (int i = 0; i < v1.size(); i++) {
+		for (int j = 0; j < v2.size(); j++) {
+			cout << v1[i][j] << " ";
+		}
+		cout << endl;
+	}
+}
+
+void afiseazalocuri() {
+	vector<vector<int>> v3;
+	vector<int> v4;
+	int sizeV3 = 5;
+	int sizeV4 = 10;
+	v3.resize(sizeV3);
+	v4.resize(sizeV4);
+	fstream p("Locuri.bin", ios::in | ios::out | ios::binary);
+	for (int j = 0; j < v3.size(); j++) {
+		for (int i = 0; i < v4.size(); i++) {
+			p.read((char*)&v4[i], sizeof(v4[i]));
+		}
+		v3[j] = v4;
+	}
+	p.close();
+
+	for (int i = 0; i < v3.size(); i++) {
+		for (int j = 0; j < v4.size(); j++) {
+			cout << v3[i][j] << " ";
+		}
+		cout << endl;
+	}
+}
+
+vector<vector<int>> returnLocuri() {
+	vector<vector<int>> v3;
+	vector<int> v4;
+	v3.resize(5);
+	v4.resize(10);
+	fstream p("Locuri.bin", ios::in | ios::out | ios::binary);
+	for (int j = 0; j < v3.size(); j++) {
+		for (int i = 0; i < v4.size(); i++) {
+			p.read((char*)&v4[i], sizeof(v4[i]));
+		}
+		v3[j] = v4;
+	}
+	p.close();
+	return v3;
+}
+
+void schimbaLocuri() {
+	cout << "Introdu randul dorit(1-5): " << endl;
+	int q1 = 0;
+	cin >> q1;
+	cout << "Introdu locul dorit(1-10): " << endl;
+	int q2 = 0;
+	cin >> q2;
+	if ((q1 > 0 && q1 <= 5) && (q2 > 0 && q2 <= 10)) {
+		vector<vector<int>> temp = returnLocuri();
+		temp[q1 - 1][q2 - 1] = 2;
+		fstream o("Locuri.bin", ios::in | ios::out | ios::binary);
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 10; j++) {
+				o.write((char*)&temp[i][j], sizeof(temp[i][j]));
+			}
+		}
+		o.close();
+	}
+	else {
+		cout << "Randul si locul dorit nu exista." << endl;
+	}
+
+	/*
+	vector<vector<int>> v3;
+	vector<int> v4;
+	int sizeV3 = 5;
+	int sizeV4 = 10;
+	v3.resize(sizeV3);
+	v4.resize(sizeV4);
+	cout << "Introdu randul dorit(1-5): " << endl;
+	int q1 = 0;
+	cin >> q1;
+	cout << "Introdu locul dorit(1-10): " << endl;
+	int q2 = 0;
+	cin >> q2;
+	int placeholder = 0;
+	int ocupat = 2;
+	fstream k("Locuri.bin", ios::in | ios::out | ios::binary);
+	for (int i = 0; i < v3.size(); i++) {
+		for (int j = 0; j < v4.size(); j++) {
+			k.read((char*)&placeholder, sizeof(placeholder));
+			if (i == q1 - 1 && j == q2 - 1) {
+				//int x = k.tellg();
+				//k.read((char*)&placeholder, sizeof(placeholder));
+				//k.seekp(x);
+				k.write((char*)&ocupat, sizeof(ocupat));
+				//break;
+			}
+		}
+	}
+	k.close();
+	*/
+}
+
 int main() {
 	
 	//////////////////////////////////////TESTE CLASA FILM////////////////////////////////
@@ -1198,33 +1321,21 @@ int main() {
 	//b.serialize1();
 	//c.serialize1();
 	
+	//afiseazaFilme();
+
 	
 
-	//afiseazaFilme();
-	//inlocuieFilmCuId();
-	//ordoneazaFilmId();
-	//c.serialize1();
-	//afiseazaFilme();
-	//stergeFilm();
-
-	//afiseazaFilme();
-
-	//Film o;
-	//o.deserialize1(0);
-	//cout << o << endl;
-
-	//ordoneazaFilmId();
-	afiseazaFilme();
-	//schimbaAtributFilm();
-	stergeFilm();
-	//inlocuieFilmCuId();
-	afiseazaFilme();
-
-	//schimbaAtributFilm();
-
-	//afiseazaFilme();
-	//afiseazaFilmCuId();
+	//v1[0][1] = 1;
 
 
+	
+	//resetLocuri();
+
+	afiseazalocuri();
+	//resetLocuri();
+	schimbaLocuri();
+	//cout << endl;
+	//cout << endl;
+	afiseazalocuri();
 
 }   

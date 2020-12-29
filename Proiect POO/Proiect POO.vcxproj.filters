@@ -23,5 +23,20 @@
     <ClInclude Include="Film.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Bilet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Consumabil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Incasare.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Istoric.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cinema.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

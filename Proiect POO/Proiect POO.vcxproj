@@ -142,7 +142,12 @@
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bilet.h" />
+    <ClInclude Include="Cinema.h" />
+    <ClInclude Include="Consumabil.h" />
     <ClInclude Include="Film.h" />
+    <ClInclude Include="Incasare.h" />
+    <ClInclude Include="Istoric.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

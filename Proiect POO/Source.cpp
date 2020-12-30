@@ -7,6 +7,7 @@
 #include <set>
 #include <algorithm> 
 #include <list>
+#include <stdio.h>
 #include "Film.h"
 #include "Bilet.h"
 #include "Consumabil.h"
@@ -210,7 +211,7 @@ int main() {
 	//////////////////////////////////////TESTE CLASA FILM////////////////////////////////
 	string x[] = { "Luni", "Sambata", "Duminica" };
 	string y[] = { "Luni", "Sambata", "Duminica", "Sambata" };
-	//Film a(2, "Batman", 2.0f, 3, x, 10.00f);
+	Film a(2, "Batman", 2.0f, 3, x, 10.00f);
 	//Film b(3, "Harap Alb si cei 7 pitici", 2.0f, 4, y, 5.00f);
 	//Film c(3, "Cinderella", 1.0f, 4, y, 10.00f);
 	//stergeBazaDateFilme1();
@@ -228,49 +229,58 @@ int main() {
 	//schimbaAtributCinema();
 	//
 
-	Consumabil u(1, "Cola", "ml", 3, x);
-	Consumabil uu(2, "Fanta", "ml", 0, nullptr);
-	//cout << uu.getConsumabilId() << endl;
-	//cout << uu.getId() << endl;
-	//cout << uu.getNume() << endl;
-	//cout << uu.getUm() << endl;
-	//cout << uu.getNrTopinguri() << endl;
-	//for (int i = 0; i < uu.getNrTopinguri(); i++) {
-	//	cout << uu.getZi()[i] << endl;
-	//}
-	//stergeBazaDateConsumabil();
-	//u.serialize(); 
-	//uu.serialize(); 
-	//Consumabil h;
-	//cout << u << endl;
-	//cout << uu << endl;
+	//Consumabil u(1, "Cola", "ml", 3, x);
+	//Consumabil uu(2, "Fanta", "ml", 0, nullptr);
 
-	//Consumabil t,l;
-	//t.deserialize(0);
-	//cout << t << endl;
-	//l.deserialize(747);
-	//cout << l << endl;
 
-	//list<Consumabil> l;
-	//l = citireConsumabile();
-	//for (list<Consumabil>::iterator i = l.begin(); i != l.end(); i++) {
-	//	cout << *i << endl;
-	//}
-	//affArrIdConsumabile();
-	//int t = locConsumabilCuId();
-	//cout << t << endl;
-	//Consumabil p;
-	//p = returneazaConsumabilCuId(2);
+	//Bilet p;
+	////p.setFilm(a);
+	////cout << p.getFilm() << endl;
+	//map<int, Film> map1 = retFilme();
+	//p.setFilm(map1[1]);
+	////cout << p.getFilm() << endl;
 	//cout << p << endl;
-	//stergeBazaDateConsumabil();
-	//u.serialize();
-	//uu.serialize();
-	//afiseazaConsumabile();
-	//inlocuieConsumabilCuId();
-	//afiseazaConsumabile();
-	//ordoneazaConsumabilId();
-	//stergeConsumabil();
-	//afiseazaConsumabile();
-	schimbaAtributConsumabil();
-	afiseazaConsumabile();
+
+	//ofstream g;
+	//g.open("student.txt"); //nocreate, noreplace(MODE)
+	//g << a;
+	//g.close();
+
+	//remove("student.txt");
+	//afiseazaCinemauri();
+	//affArrId();
+
+	//ofstream g;
+	//string l, h, k;
+	//l = "student";
+	//int b = 100;
+	//k = to_string(b);
+	//h = ".txt";
+	//cout << l + k + h << endl;
+	//g.open(l+k+h); //nocreate, noreplace(MODE)
+	////g << a;
+	//g.close();
+	//string file = l  + h;
+	//remove(file.c_str());
+	//creazaFisierLocuri(5);
+	//introduToateFilmeleInCinema();
+
+	//int* z = arrIdC();
+	//for (int i = 0; i < nrCinemauri(); i++) {
+	//	creazaFisierLocuri(z[i]);
+	//}
+
+	//stergeFilmDinCinema(1, 4);
+
+	int* h = returnFilmeDinCinema(5);
+	for (int i = 0; i < returnNrFilmeDinCinema(5); i++) {
+		cout << h[i] << endl;
+	}
+
+	//introduToateFilmeleInCinemaul(5);
+
+	//int z = returnNrFilmeDinCinema(5);
+	//cout << z << endl;
+	//afiseazaToateFilmeleDinCinema();
+
 }   

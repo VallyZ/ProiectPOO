@@ -703,10 +703,41 @@ int* arrIdCinemauri() { // return array cu id-urile cinemaurilor
 	}
 }
 
+int* arrIdC() { // return array cu id-urile cinemaurilor introduse de utilizator
+	int* arrId = new int[nrCinemauri()];
+	const int nrf = nrCinemauri();
+	//int arrIdFilme[nrf];
+	ifstream f("Cinema.bin", ios::binary);
+	if (f.is_open()) {
+		for (int i = 0; i < nrf; i++) {
+			int x = 0;
+			f.seekg((long long)i * 1062);
+			f.read((char*)&x, sizeof(x));
+			f.read((char*)&x, sizeof(x));
+			arrId[i] = x;
+		}
+		f.close();
+		return arrId;
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
+	}
+}
+
 void affArrIdCinemauri() {
 	int* arr = arrIdCinemauri();
 	cout << "Exista urmatoarele Cinemauri cu Id: " << endl;
 	for (int i = 0; i < nrCinemauri(); i++) {
+		cout << arr[i] << " ";
+	}
+	cout << endl;
+}
+
+void affArrIdC() {
+	int* arr = arrIdC();
+	int max = nrCinemauri();
+	cout << "Exista urmatoarele Cinemauri cu Id: " << endl;
+	for (int i = 0; i < max; i++) {
 		cout << arr[i] << " ";
 	}
 	cout << endl;
@@ -973,5 +1004,26 @@ void schimbaAtributCinema() { //modifica atributul unui cinema
 		}
 	default:
 		cout << "Alegere invalida." << endl;
+	}
+}
+
+void creazaFisierLocuri(int h) {
+	string x = "cinema";
+	string u = to_string(h);
+	string y = ".bin";
+	string z = x + u + y;
+	ofstream f;
+	f.open(z,ios::_Noreplace);
+	f.close();
+}
+void reseteazaFisierLocuri(int h) {
+	if (h > 0) {
+		string x, y, z;
+		x = "cinema";
+		y = ".bin";
+		z = x + to_string(h) + y;
+		ofstream f(z, ios::trunc | ios::binary);
+		//f.write((char*)&h, sizeof(h));
+		f.close();
 	}
 }

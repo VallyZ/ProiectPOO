@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <map>
 #include <vector>
+#include "Cinema.h"
 using namespace std;
 
 class Film {
@@ -279,26 +280,7 @@ public:
 	void forteazaId(int x) {
 		const_cast<int&>(filmId) = x;
 	}
-	/*
-		void serialize() { // Scrie in fisier binar un obiect.
-			ofstream f("Film.bin", ios::app | ios::binary);
-			//f.seekp(0, ios::end);
-			cout << f.tellp() << endl;
-			f.write((char*)&filmId, sizeof(filmId));
-			f.write((char*)&id, sizeof(id));
-			int len = nume.length() + 1;
-			f.write((char*)&len, sizeof(len));
-			f.write(nume.c_str(), len);
-			f.write((char*)&durata, sizeof(durata));
-			f.write((char*)&nrZile, sizeof(nrZile));
-			for (int i = 0; i < nrZile; i++) {
-				f.write((char*)&zi[i], sizeof(zi[i]));
-			}
-			f.write((char*)&start, sizeof(start));
-			cout << f.tellp() << endl;
-			f.close();
-		}
-		*/
+
 	void serialize1() { // Scrie in fisier binar un obiect.
 		ofstream f("Film1.bin", ios::app | ios::binary);
 		if (f.is_open()) {
@@ -356,28 +338,7 @@ public:
 			cout << "Eroare la deschiderea fisierului." << endl;
 		}
 	}
-	/*
-	void deserialize() {
-		ifstream f("Film.bin", ios::binary);
-		f.read((char*)&filmId, sizeof(filmId));
-		f.read((char*)&id, sizeof(id));
-		int len = 0;
-		f.read((char*)&len, sizeof(len));
-		char* aux = new char[len];
-		f.read(aux, len);
-		nume = aux;
-		f.read((char*)&durata, sizeof(durata));
-		f.read((char*)&nrZile, sizeof(nrZile));
-		delete[] zi;
-		zi = new string[nrZile];
-		string* zi1 = new string[nrZile];
-		for (int i = 0; i < nrZile; i++) {
-			f.read((char*)&zi1[i], sizeof(zi1[i])); //ca sa functioneze are nevoie sa stearga ceva alocat.
-			zi[i] = zi1[i];
-		}
-		f.read((char*)&start, sizeof(start));
-		f.close();
-	}*/
+
 	void deserialize1(int x) { //afiseaza un obiect de la o anumita locatie
 		fstream f("Film1.bin", ios::out | ios::in | ios::binary);
 		if (f.is_open()) {
@@ -492,19 +453,6 @@ public:
 	bool operator!() { //operator !
 		return nrZile > 0;
 	}
-
-
-	/*
-	void getAll() {
-		cout << "Id: " << getId() << endl;
-		cout << "Nume: " << getNume() << endl;
-		cout << "Durata: " << getDurata() << endl;
-		cout << "Nr zile: " << getNrZile() << endl;
-		cout << showZi() << endl;
-		//cout << "Zi: " << getZi() << endl;
-		cout << "Ora de inceput: " << getStart() << endl;
-	}
-	*/
 
 	friend ostream& operator<<(ostream&, Film);
 	friend ofstream& operator<<(ofstream&, Film);
@@ -880,8 +828,38 @@ int* arrIdFilme() { // return array cu id-urile filmelor
 	}
 }
 
+int* arrIdF() { // return array cu id-urile introduse de la tastatura
+	int* arrIdFilme = new int[nrFilme()];
+	const int nrf = nrFilme();
+	//int arrIdFilme[nrf];
+	ifstream f("Film1.bin", ios::binary);
+	if (f.is_open()) {
+		for (int i = 0; i < nrf; i++) {
+			int x = 0;
+			f.seekg((long long)i * 860);
+			f.read((char*)&x, sizeof(x));
+			f.read((char*)&x, sizeof(x));
+			arrIdFilme[i] = x;
+		}
+		f.close();
+		return arrIdFilme;
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
+	}
+}
+
 void affArrIdFilme() {
 	int* arr = arrIdFilme();
+	cout << "Exista urmatoarele filme cu Id: " << endl;
+	for (int i = 0; i < nrFilme(); i++) {
+		cout << arr[i] << " ";
+	}
+	cout << endl;
+}
+
+void affArrIdF() {
+	int* arr = arrIdF();
 	cout << "Exista urmatoarele filme cu Id: " << endl;
 	for (int i = 0; i < nrFilme(); i++) {
 		cout << arr[i] << " ";
@@ -1096,5 +1074,154 @@ void schimbaAtributFilm() { //modifica atributul unui film
 		}
 	default:
 		cout << "Alegere invalida." << endl;
+	}
+}
+
+void introduFilmInCinema(int h, int b) { // introdu filmul cu id b in cinemaul h
+	int loc = 50;
+	string x, y, z;
+	x = "cinema";
+	y = ".bin";
+	z = x + to_string(h) + y;
+	ofstream f(z, ios::app | ios::binary | ios::_Nocreate);
+	f.write((char*)&b, sizeof(b));
+	f.write((char*)&loc, sizeof(loc));
+	f.close();
+}
+
+int* returnFilmeDinCinema(int h){// returneaza vector de id-uri de filme din cinemaul h 
+	int* ret = new int[100];
+	int i = 0;
+	string x, y, z;
+	x = "cinema";
+	y = ".bin";
+	z = x + to_string(h) + y;
+	fstream f(z, ios::in | ios::out | ios::binary);
+	if (f.is_open()) {
+		int x1 = f.tellg();
+		f.seekg(0, ios::end);
+		int x2 = f.tellg();
+		f.seekg(0, ios::beg);
+		while (x1 != x2) {
+			int x3 = 0;
+			int x4 = 0;
+			f.read((char*)&x3, sizeof(x3));
+			f.read((char*)&x4, sizeof(x4));
+			ret[i] = x3;
+			i++;
+			x1 = f.tellg();
+		}
+		f.close();
+	}
+	return ret;
+}
+
+int returnNrFilmeDinCinema(int h) { // returneaza numarul de filme din cinemaul h
+	int ret = 0;
+	int i = 0;
+	string x, y, z;
+	x = "cinema";
+	y = ".bin";
+	z = x + to_string(h) + y;
+	fstream f(z, ios::in | ios::out | ios::binary);
+	if (f.is_open()) {
+		int x1 = f.tellg();
+		f.seekg(0, ios::end);
+		int x2 = f.tellg();
+		ret = x2 / 8;
+		f.close();
+	}
+	return ret;
+}
+
+void introduToateFilmeleInCinema() { // introdu toate filmele in toate cinemaurile
+	int* z = arrIdC();
+	int* zz = arrIdF();
+	for (int i = 0; i < nrCinemauri(); i++) {
+		for (int j = 0; j < nrFilme(); j++) {
+			introduFilmInCinema(z[i], zz[j]);
+		}
+	}
+}
+
+void introduToateFilmeleInCinemaul(int h) { // introdu toate filmele in cinemaul h
+	int* z = arrIdC();
+	int* zz = arrIdF();
+	for (int i = 0; i < nrCinemauri(); i++) {
+		for (int j = 0; j < nrFilme(); j++) {
+			if (z[i] == h) {
+				introduFilmInCinema(z[i], zz[j]);
+			}
+		}
+	}
+}
+
+void afiseazaFilmInCinema(int h) { // afiseaza id-ul si numarul de locuri libere din cinemaul h
+	int id = 0;
+	int loc = 0;
+	string x, y, z;
+	x = "cinema";
+	y = ".bin";
+	z = x + to_string(h) + y;
+	fstream f(z, ios::in | ios::out | ios::binary);
+	if (f.is_open()) {
+		int x1 = f.tellg();
+		f.seekg(0, ios::end);
+		int x2 = f.tellg();
+		f.seekg(0, ios::beg);
+		while (x1 != x2) {
+			f.read((char*)&id, sizeof(id));
+			f.read((char*)&loc, sizeof(loc));
+			cout << endl;
+			cout << "Id film: " << id << endl;
+			cout << "Locuri libere: " << loc << endl;
+			//int k = f.tellp();
+			//cout << k << endl;
+			x1 = f.tellg();
+		}
+		f.close();
+	}
+}
+
+void afiseazaToateFilmeleDinCinema() { // afiseaza toate filmele din toate cinemaurile
+	int* z = arrIdC();
+	for (int i = 0; i < nrCinemauri(); i++) {
+		afiseazaFilmInCinema(z[i]);
+	}
+}
+
+void stergeFilmDinCinema(int h, int g) { // sterge filmul g din fisierul cinemaul h
+	if (h > 0) {
+		string x, y, z;
+		x = "cinema";
+		y = ".bin";
+		z = x + to_string(h) + y;
+		int x3 = 0;
+		int x4 = 0;
+		map<int, int>Map;
+		fstream f(z, ios::in | ios::out | ios::binary);
+		if (f.is_open()) {
+			int x1 = f.tellg();
+			f.seekg(0, ios::end);
+			int x2 = f.tellg();
+			f.seekg(0, ios::beg);
+			while (x1 != x2) {
+				f.read((char*)&x3, sizeof(x3));
+				f.read((char*)&x4, sizeof(x4));
+				if (x3 != g) {
+					Map[x3] = x4;
+				}
+				x1 = f.tellg();
+			}
+			f.close();
+		}
+		remove(z.c_str());
+		creazaFisierLocuri(h);
+		fstream ff(z, ios::in | ios::out | ios::binary);
+		for (map<int, int>::iterator it = Map.begin(); it != Map.end(); it++) {
+			ff.write((char*)&it->first, sizeof(it->first));
+			ff.write((char*)&it->second, sizeof(it->second));
+		}
+		ff.close();
 	}
 }

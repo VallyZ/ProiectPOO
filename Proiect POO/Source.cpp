@@ -6,6 +6,7 @@
 #include <vector>
 #include <set>
 #include <algorithm> 
+#include <list>
 #include "Film.h"
 #include "Bilet.h"
 #include "Consumabil.h"
@@ -217,14 +218,59 @@ int main() {
 	//b.serialize1();
 	//c.serialize1();
 
-	Cinema n(1, "Cinemagia", "Bucuresti", "Iancului 53", 4, y);
-	Cinema nn(2, "Cinemagia2", "Bucuresti2", "Iancului 54", 3, x);
+	//Cinema n(1, "Cinemagia", "Bucuresti", "Iancului 53", 4, y);
+	//Cinema nn(2, "Cinemagia2", "Bucuresti2", "Iancului 54", 3, x);
 
 	//stergeBazaDateCinema();
 	//n.serialize();
 	//nn.serialize();
 
 	//schimbaAtributCinema();
-	//afiseazaCinemauri();
+	//
 
+	Consumabil u(1, "Cola", "ml", 3, x);
+	Consumabil uu(2, "Fanta", "ml", 0, nullptr);
+	//cout << uu.getConsumabilId() << endl;
+	//cout << uu.getId() << endl;
+	//cout << uu.getNume() << endl;
+	//cout << uu.getUm() << endl;
+	//cout << uu.getNrTopinguri() << endl;
+	//for (int i = 0; i < uu.getNrTopinguri(); i++) {
+	//	cout << uu.getZi()[i] << endl;
+	//}
+	//stergeBazaDateConsumabil();
+	//u.serialize(); 
+	//uu.serialize(); 
+	//Consumabil h;
+	//cout << u << endl;
+	//cout << uu << endl;
+
+	//Consumabil t,l;
+	//t.deserialize(0);
+	//cout << t << endl;
+	//l.deserialize(747);
+	//cout << l << endl;
+
+	//list<Consumabil> l;
+	//l = citireConsumabile();
+	//for (list<Consumabil>::iterator i = l.begin(); i != l.end(); i++) {
+	//	cout << *i << endl;
+	//}
+	//affArrIdConsumabile();
+	//int t = locConsumabilCuId();
+	//cout << t << endl;
+	//Consumabil p;
+	//p = returneazaConsumabilCuId(2);
+	//cout << p << endl;
+	//stergeBazaDateConsumabil();
+	//u.serialize();
+	//uu.serialize();
+	//afiseazaConsumabile();
+	//inlocuieConsumabilCuId();
+	//afiseazaConsumabile();
+	//ordoneazaConsumabilId();
+	//stergeConsumabil();
+	//afiseazaConsumabile();
+	schimbaAtributConsumabil();
+	afiseazaConsumabile();
 }   

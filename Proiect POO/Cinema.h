@@ -262,6 +262,7 @@ public:
 					f.write("", len);
 				}
 			}
+			f.close();
 		}
 		else {
 			cout << "Eroare la deschiderea fisierului." << endl;
@@ -368,7 +369,7 @@ public:
 			id++;
 			return *this;
 	}
-	Cinema operator++(int x) {//preincrementare
+	Cinema operator++(int x) {//postincrementare
 		Cinema c = *this;
 		id++;
 		return c;
@@ -588,7 +589,7 @@ void ordoneazaCinemaId() {
 	}
 }
 
-set<Cinema> citire() {
+set<Cinema> citireCinemauri() {
 	ordoneazaCinemaId();
 	set<Cinema> Set;
 	int i = 0;
@@ -650,7 +651,7 @@ set<Cinema> citire() {
 }
 
 void afiseazaCinemauri() {
-	set<Cinema> Set = citire();
+	set<Cinema> Set = citireCinemauri();
 	for (set<Cinema>::iterator i = Set.begin(); i != Set.end();i++) {
 		cout << *i << endl;
 	}
@@ -668,12 +669,12 @@ void stergeBazaDateCinema() {
 }
 
 set<Cinema> returnCinemauri() {
-	set<Cinema> Set = citire();
+	set<Cinema> Set = citireCinemauri();
 	return Set;
 }
 
 //int Cinema::getNumarCinemauri() {
-//	set<Cinema> Set = citire();
+//	set<Cinema> Set = citireCinemauri();
 //	return numarCinemauri;
 //}
 //
@@ -682,7 +683,7 @@ set<Cinema> returnCinemauri() {
 //	cout << u << endl;
 //}
 
-int* arrIdCinemauri() { // return array cu id-urile filmelor
+int* arrIdCinemauri() { // return array cu id-urile cinemaurilor
 	int* arrIdCinemauri = new int[nrCinemauri()];
 	const int nrf = nrCinemauri();
 	//int arrIdFilme[nrf];
@@ -743,14 +744,14 @@ int locCinemaCuId() { //returneaza locatia unui film in fisier
 	}
 }
 
-void afiseazaCinemaCuId() { // afiseaza un film existent in fisier
+void afiseazaCinemaCuId() { // afiseaza un cinema existent in fisier
 	int z = locCinemaCuId();
 	Cinema o;
 	o.deserialize(z);
 	cout << o << endl;
 }
 
-Cinema returneazaCinemaCuId(int x) { // afiseaza un film existent in fisier
+Cinema returneazaCinemaCuId(int x) { // returneaza un cinema existent in fisier
 	int* arr = arrIdCinemauri();
 	int found = 0;
 	int max = nrCinemauri();
@@ -849,7 +850,7 @@ void stergeCinema() { // sterge un cinema din fisier
 	}if (gasit == 1) {
 		int sigur = 0;
 		p = returneazaCinemaCuId(x1);
-		set<Cinema> Set = citire();
+		set<Cinema> Set = citireCinemauri();
 		//for (set<Cinema>::iterator i = Set.begin(); i != Set.end(); i++) {
 		//	cout << *i << endl;
 		//}

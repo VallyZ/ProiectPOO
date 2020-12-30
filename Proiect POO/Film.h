@@ -726,7 +726,7 @@ void ordoneazaFilmId() {
 	}
 }
 
-map<int, Film> citire1() { // afiseaza toate filmele din fisier
+map<int, Film> citireFilme() { // afiseaza toate filmele din fisier
 	map<int, Film> Map;
 	int i = 0;
 	ifstream f("Film1.bin", ios::binary);
@@ -791,19 +791,19 @@ void stergeBazaDateFilme1() {
 }
 
 map<int, Film> returnFilme() {
-	map<int, Film>Map1 = citire1();
+	map<int, Film>Map1 = citireFilme();
 	return Map1;
 }
 
 void afiseazaFilme() {
-	map<int, Film>Map1 = citire1();
+	map<int, Film>Map1 = citireFilme();
 	for (int i = 0; i < Map1.size(); i++) {
 		cout << Map1[i] << endl;
 	}
 	//cout << Film::getNumarFilme() << endl;
 }
 int Film::getNumarFilme() {
-	map<int, Film>Map1 = citire1();
+	map<int, Film>Map1 = citireFilme();
 	return numarFilme;
 }
 

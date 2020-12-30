@@ -216,84 +216,15 @@ int main() {
 	//a.serialize1();
 	//b.serialize1();
 	//c.serialize1();
-	
-	//afiseazaFilme();
-
-	//v1[0][1] = 1;
-
-	//resetLocuri();
-
-	//afiseazaFilme();
-	//int u = Film::getNumarFilme();
-	//cout << u << endl;
-	
-	//afiseazaNumarFilme();
-	//afiseazaFilme();
-	//cout << a << endl;
-
-	//string* p = a.getZi();
-	//for (int i = 0; i < a.getNrZile(); i++) {
-	//	cout << p[i] << endl;
-	//}
-
-	//afiseazalocuri();
-	//resetLocuri();
-	//schimbaLocuri();
-	//cout << endl;
-	//cout << endl;
-	//afiseazalocuri();
-
-	//float u = 12.30;
-	
-	//cout << fixed << setprecision(2) << u << endl;
 
 	Cinema n(1, "Cinemagia", "Bucuresti", "Iancului 53", 4, y);
 	Cinema nn(2, "Cinemagia2", "Bucuresti2", "Iancului 54", 3, x);
 
-	//fstream o("Cinema.bin" , ios::in | ios::out | ios::trunc | ios::binary);
-	//o.close();
+	//stergeBazaDateCinema();
 	//n.serialize();
 	//nn.serialize();
 
-	//ordoneazaCinemaId();
-	//Cinema z,l;
-	//z.deserialize(2124);
-	//cout << z << endl;
-	//l.deserialize(3186);
-	//cout << l << endl;
-
-	//int u = nrCinemauri();
-	//cout << u << endl;
-
-	//set<Cinema> t;
-	//t.insert(n);
-	//t.insert(nn);
-	//for (set<Cinema>::iterator i = t.begin(); i != t.end(); i++) {
-	//	cout << *i << endl;
-	//}
-
-	//afiseazaCinemauri();
-	//int u = nrCinemauri();
-	//cout << u << endl;
-
-	//int* u = arrIdCinemauri();
-	//for (int i = 0; i < nrCinemauri(); i++) {
-	//	cout << u[i] << endl;
-	//}
-
-	//affArrIdCinemauri();
-
-	//int u = locCinemaCuId();
-	//cout << u << endl;
-	//afiseazaCinemaCuId();
-	//inlocuieCinemaCuId();
-	//afiseazaCinemauri();
-
-	/*Cinema o;
-	o = returneazaCinemaCuId(3);
-	cout << o << endl;*/
-
-	//stergeCinema();
 	//schimbaAtributCinema();
-	afiseazaCinemauri();
+	//afiseazaCinemauri();
+
 }   

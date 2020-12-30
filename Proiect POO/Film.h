@@ -523,6 +523,9 @@ public:
 			//return false;
 		}
 	}
+	friend bool operator<(const Film& x, const Film& y) {
+		return x.filmId < y.filmId;
+	}
 	friend bool operator==(const Film& x, const Film& y) //operator==
 	{
 		if (x.nrZile == y.nrZile) {

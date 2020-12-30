@@ -344,27 +344,97 @@ public:
 	}
 
 
-
+	string& operator[](int x) { //operator []
+		if (x >= 0 && x < nrZile) {
+			return zi[x];
+		}
+		else {
+			cout << "Ziua introdusa nu exista." << endl;
+		}
+	}
+	Cinema operator+(int x) {//operator + la stanga
+		int z = id + x;
+		if (z>0) {
+			Cinema f = *this;
+			f.id += x;
+			return f;
+		}
+		else {
+			cout << "Adunarea nu poate rezulta <= 0." << endl;
+			return *this;
+		}
+	}
+	Cinema operator++() {//preincrementare
+			id++;
+			return *this;
+	}
+	Cinema operator++(int x) {//preincrementare
+		Cinema c = *this;
+		id++;
+		return c;
+	}
+	Cinema operator--() {//predencrementare
+		if (id - 1 > 0) {
+			id--;
+			return *this;
+		}
+		else {
+			cout << "Scaderea nu poate rezulta <= 0" << endl;
+			return *this;
+		}
+	}
+	Cinema operator--(int x) {//postdecrementare
+		Cinema c = *this;
+		if (id - 1 > 0) {
+			id--;
+			return c;
+		}
+		else {
+			cout << "Scaderea nu poate rezulta <= 0" << endl;
+			return c;
+		}
+	}
+	explicit operator int() {//cast explicit
+		return cinemaId;
+	}
+	bool operator!() { //operator !
+		return nrZile > 0;
+	}
 
 	friend ostream& operator<<(ostream&, Cinema);
 	friend ofstream& operator<<(ofstream&, Cinema);
 	friend istream& operator>>(istream&, Cinema&);
 	friend ifstream& operator>>(ifstream&, Cinema&);
-	//friend bool operator<(const Cinema& x, const Cinema& y) {
-	//	if (x.cinemaId <= y.cinemaId) {
-	//		return &x;
-	//	}
-	//	else {
-	//		return &y;
-	//	}
-	//}
 	friend bool operator<(const Cinema& x,const Cinema& y){
 		return x.cinemaId < y.cinemaId;
 	}
-
+	friend Cinema operator+(int, Cinema);
+	friend bool operator==(const Cinema& x, const Cinema& y) //operator==
+	{
+		if (x.nrZile == y.nrZile) {
+			cout << "Numar de zile egale." << endl;
+			return true;
+		}
+		else {
+			cout << "Numar de zile inegale." << endl;
+			return false;
+		}
+	}
 };
 
 int Cinema::numarCinemauri = 0;
+
+Cinema operator+(int x, Cinema c) {//operator + la dreapta
+	int z = c.id + x;
+	if (z > 0) {
+		c.id += x;
+		return c;
+	}
+	else {
+		cout << "Adunarea nu poate rezulta < 0." << endl;
+		return c;
+	}
+}
 
 ostream& operator<<(ostream& o, Cinema c) { // cout
 	o << endl;

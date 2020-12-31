@@ -212,14 +212,14 @@ int main() {
 	string x[] = { "Luni", "Sambata", "Duminica" };
 	string y[] = { "Luni", "Sambata", "Duminica", "Sambata" };
 	Film a(2, "Batman", 2.0f, 3, x, 10.00f);
-	//Film b(3, "Harap Alb si cei 7 pitici", 2.0f, 4, y, 5.00f);
+	Film b(3, "Harap Alb si cei 7 pitici", 2.0f, 4, y, 5.00f);
 	//Film c(3, "Cinderella", 1.0f, 4, y, 10.00f);
 	//stergeBazaDateFilme1();
 	//a.serialize1();
 	//b.serialize1();
 	//c.serialize1();
 
-	//Cinema n(1, "Cinemagia", "Bucuresti", "Iancului 53", 4, y);
+	Cinema n(1, "Cinemagia", "Bucuresti", "Iancului 53", 4, y);
 	//Cinema nn(2, "Cinemagia2", "Bucuresti2", "Iancului 54", 3, x);
 
 	//stergeBazaDateCinema();
@@ -231,16 +231,33 @@ int main() {
 
 	//Consumabil u(1, "Cola", "ml", 3, x);
 	//Consumabil uu(2, "Fanta", "ml", 0, nullptr);
+	//cout << a.getZi()[1] << endl;
 
-
-	//Bilet p;
-	////p.setFilm(a);
-	////cout << p.getFilm() << endl;
-	//map<int, Film> map1 = retFilme();
-	//p.setFilm(map1[1]);
-	////cout << p.getFilm() << endl;
+	string var[] = { "Gigel", "Tudor", "Andrei" };
+	Bilet p("Vali", 3, var);
+	p.setFilm(a);
+	p.setCinema(n);
 	//cout << p << endl;
 
+	//cout << p.getFilm().getNume() << endl;
+	//cout << p.getFilm() << endl;
+	//map<int, Film> map1 = retFilme();
+	//p.setFilm(map1[1]);
+	//cout << p.getFilm() << endl;
+	//stergeCinema();
+	//introduCinema();
+	Bilet i;
+	cin >> i;
+	i.serialize1();
+	cout << i << endl;
+
+	//i.deserialize();
+	//i.serialize();
+	//afiseazaFilme();
+	//afiseazaFilmInCinema(1);
+	//stergeFilmDinCinema(1, 3);
+	//afiseazaFilmInCinema(1);
+/*
 	//ofstream g;
 	//g.open("student.txt"); //nocreate, noreplace(MODE)
 	//g << a;
@@ -272,10 +289,10 @@ int main() {
 
 	//stergeFilmDinCinema(1, 4);
 
-	int* h = returnFilmeDinCinema(5);
-	for (int i = 0; i < returnNrFilmeDinCinema(5); i++) {
-		cout << h[i] << endl;
-	}
+	//int* h = returnFilmeDinCinema(5);
+	//for (int i = 0; i < returnNrFilmeDinCinema(5); i++) {
+	//	cout << h[i] << endl;
+	//}
 
 	//introduToateFilmeleInCinemaul(5);
 
@@ -283,4 +300,49 @@ int main() {
 	//cout << z << endl;
 	//afiseazaToateFilmeleDinCinema();
 
+	//affArrIdC();
+	//stergeBazaDateFilme1();
+	//afiseazaFilme();
+	//introduFilm();
+	//afiseazaFilme();
+	//afiseazaFilmInCinema(1);
+	//afiseazaFilmInCinema(2);
+	//introduFilmInCinema(20, 1);
+	//introduFilmInCinema(20, 1);
+	//afiseazaFilmInCinema(20);
+	//creazaFisierLocuri(1);
+	//introduCinema();
+	//introduCinema();
+	//introduCinema();
+	//afiseazaCinemauri();
+	//introduCinema();
+	//introduToateFilmeleInCinemaul(1);
+	//stergeCinema();
+	//introduToateFilmeleInCinema();
+	//afiseazaFilmInCinema(1);
+	//afiseazaCinemauri();
+	//afiseazaFilmInCinema(1);
+	//stergeToateFilmeleDinCinema(1);
+	//afiseazaFilmInCinema(1);
+	//afiseazaFilmInCinema(2);
+//	stergeFilmDinCinema(1, 5);
+	//stergeFilmDinCinema(2, 5);
+//	stergeFilm();
+	//afiseazaToateFilmeleDinCinema();
+	*/
+	//afiseazaFilmInCinema(1);
+	//int u = returnLocuriLibereFilm(1, 3);
+	//cout << u << endl;
+
+	//char* u = (char*)"aaaaaaaaaaaa";
+	//cout << u << endl;
+	//char* uu = nullptr;
+	//uu = new char[strlen(u) + 1];
+	//strcpy_s(uu, strlen(u) + 1, u);
+	//cout << uu << endl;
+
+	//string* l = new string[3];
+	//l = a.getZi();
+	//cout << l[0] << endl;
+	//cout << l[1] << endl;
 }   

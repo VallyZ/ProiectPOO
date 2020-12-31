@@ -268,6 +268,38 @@ public:
 			cout << "Eroare la deschiderea fisierului." << endl;
 		}
 	}
+
+	void serializeBilet(string x) { //  pentru a serializa in Bilet.bin
+		ofstream f(x, ios::app | ios::binary);
+		if (f.is_open()) {
+			int y = f.tellp();
+			cout << y << endl;
+			f.write((char*)&cinemaId, sizeof(cinemaId));
+			f.write((char*)&id, sizeof(id));
+			int len = 101;
+			f.write((char*)&len, sizeof(len));
+			f.write(nume, len);
+			f.write((char*)&len, sizeof(len));
+			f.write(oras.c_str(), len);
+			f.write((char*)&len, sizeof(len));
+			f.write(adresa.c_str(), len);
+			f.write((char*)&nrZile, sizeof(nrZile));
+			for (int i = 0; i < 7; i++) {
+				if (zi[i].length() != 0 && zi[i].length() < 9) {
+					f.write((char*)&len, sizeof(len));
+					f.write(zi[i].c_str(), len);
+				}
+				else {
+					f.write((char*)&len, sizeof(len));
+					f.write("", len);
+				}
+			}
+			f.close();
+		}
+		else {
+			cout << "Eroare la deschiderea fisierului." << endl;
+		}
+	}
 	void serialize(int x) {
 		fstream f("Cinema.bin", ios::out | ios::in | ios::binary);
 		if (f.is_open()) {
@@ -479,18 +511,52 @@ ofstream& operator<<(ofstream& o, Cinema c) {
 	return o;
 }
 istream& operator>>(istream& i, Cinema& c) { //cin
+	void affArrIdC();
+	affArrIdC();
+	int* arrIdC();
+	int* arr = arrIdC();
+	int nrCinemauri();
+	int max = nrCinemauri();
+	int gasit = 0;
 	int id;
 	char* nume;
 	string oras;
 	string adresa;
 	int nrZile;
-	cout << "Id: ";
-	i >> id;
-	if (id > 0) {
-		c.setId(id);
-	}
-	else {
-		c.setId(0);
+	c.setId(0);
+	//cout << "Id: ";
+	//i >> id;
+	//for (int i = 0; i < max; i++) {
+	//	if (arr[i] == id) {
+	//		gasit = 1;
+	//	}
+	//}
+	//if (id > 0 && gasit == 0) {
+	//	c.setId(id);
+	//}
+	//else {
+	//	cout << "Eroare la introducerea id-ului." << endl;
+	//	cout << "Id-ul trebuie sa fie unic si > 0." << endl;
+	//	c.setId(0);
+	//	gasit = 0;
+	//}
+	while (c.getId() == 0 && gasit == 0) {
+		cout << "Id: ";
+		i >> id;
+		for (int i = 0; i < max; i++) {
+			if (arr[i] == id) {
+				gasit = 1;
+			}
+		}
+		if (id > 0 && gasit == 0) {
+			c.setId(id);
+		}
+		else {
+			cout << "Eroare la introducerea id-ului." << endl;
+			cout << "Id-ul trebuie sa fie unic si > 0." << endl;
+			c.setId(0);
+			gasit = 0;
+		}
 	}
 	cout << "Nume: ";
 	char buffer[101];
@@ -508,7 +574,7 @@ istream& operator>>(istream& i, Cinema& c) { //cin
 	c.setAdresa(adresa);
 	cout << "Nr zile(maxim 7): ";
 	i >> nrZile;
-	while (nrZile < 0 && nrZile>7) {
+	while (nrZile <= 0 || nrZile>7) {
 		cout << "Numarul de zile nu poate fi < 0 si > 7." << endl;
 		cout << "Nr zile(maxim 7): ";
 		i >> nrZile;
@@ -871,7 +937,7 @@ void stergeCinema() { // sterge un cinema din fisier
 	affArrIdCinemauri();
 	cout << endl;
 	int* id = arrIdCinemauri();
-	cout << "Introdu id-ul cinema-ului pe care vrei sa il stergi: " << endl;
+	cout << "Introdu id-ul cinema-ului pe care vrei sa il stergi: (Cinema id: )" << endl;
 	cin >> x1;
 	Cinema p;
 	for (int i = 0; i < max; i++) {
@@ -893,6 +959,11 @@ void stergeCinema() { // sterge un cinema din fisier
 				if (i == Set.find(p)) {
 					Set.erase(i);
 					cout << "Cinema sters cu succes" << endl;
+					string x = "cinema";
+					string u = to_string(p.getId());
+					string y = ".bin";
+					string z = x + u + y;
+					remove(z.c_str());
 					break;
 				}
 			}
@@ -1008,22 +1079,48 @@ void schimbaAtributCinema() { //modifica atributul unui cinema
 }
 
 void creazaFisierLocuri(int h) {
-	string x = "cinema";
-	string u = to_string(h);
-	string y = ".bin";
-	string z = x + u + y;
-	ofstream f;
-	f.open(z,ios::_Noreplace);
-	f.close();
-}
-void reseteazaFisierLocuri(int h) {
-	if (h > 0) {
-		string x, y, z;
-		x = "cinema";
-		y = ".bin";
-		z = x + to_string(h) + y;
-		ofstream f(z, ios::trunc | ios::binary);
-		//f.write((char*)&h, sizeof(h));
+	//int* arr = arrIdC();
+	//int max = nrCinemauri();
+	//int gasit = 0;
+	//for (int i = 0; i < max; i++) {
+	//	if (arr[i] == h) {
+	//		gasit = 1;
+	//		break;
+	//	}
+	//}
+	//if (gasit == 0) {
+		string x = "cinema";
+		string u = to_string(h);
+		string y = ".bin";
+		string z = x + u + y;
+		ofstream f;
+		f.open(z, ios::_Noreplace);
 		f.close();
+	//}
+	//else {
+	//	cout << "Exista deja fisierul cu id: " << h << "." << endl;
+	//}
+}
+//void reseteazaFisierLocuri(int h) {
+//	if (h > 0) {
+//		string x, y, z;
+//		x = "cinema";
+//		y = ".bin";
+//		z = x + to_string(h) + y;
+//		ofstream f(z, ios::trunc | ios::binary);
+//		//f.write((char*)&h, sizeof(h));
+//		f.close();
+//	}
+//}
+void introduCinema() {
+	Cinema c;
+	cin >> c;
+	if (c.getId() != 0) {
+		c.serialize();
+		ordoneazaCinemaId();
+		creazaFisierLocuri(c.getId());
+	}
+	else {
+		cout << "Cinemaul nu a fost introdus" << endl;
 	}
 }

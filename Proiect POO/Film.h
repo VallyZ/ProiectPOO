@@ -114,7 +114,7 @@ public:
 
 	Film(const Film& f) : filmId(f.filmId) {
 		id = f.id;
-		if (nume != nullptr) {
+		if (f.nume != nullptr) {
 			this->nume = new char[strlen(f.nume) + 1];
 			strcpy_s(this->nume, strlen(f.nume) + 1, f.nume);
 		}
@@ -303,6 +303,40 @@ public:
 				}
 			}
 			f.write((char*)&start, sizeof(start));
+			f.close();
+		}
+		else {
+			cout << "Eroare la deschiderea fisierului." << endl;
+		}
+	}
+	void serialize1Bilet(string z) { // pentru a serializa in Bilet
+		ofstream f(z, ios::app | ios::binary);
+		if (f.is_open()) {
+			int y = f.tellp();
+			cout << y << endl;
+			f.write((char*)&filmId, sizeof(filmId));
+			f.write((char*)&id, sizeof(id));
+			int len = 101;
+			f.write((char*)&len, sizeof(len));
+			f.write(nume, len);
+			f.write((char*)&durata, sizeof(durata));
+			f.write((char*)&nrZile, sizeof(nrZile));
+			int len1 = 101;
+			for (int i = 0; i < 7; i++) {
+
+				if (zi != nullptr) {
+					if (zi[i].length() != 0 && zi[i].length() < 9) {
+						f.write((char*)&len1, sizeof(len1));
+						f.write(zi[i].c_str(), len1);
+					}
+					else {
+						f.write((char*)&len1, sizeof(len1));
+						f.write("", len1);
+					}
+				}
+			}
+			f.write((char*)&start, sizeof(start));
+			//delete[]
 			f.close();
 		}
 		else {
@@ -547,6 +581,14 @@ ofstream& operator<<(ofstream& of, Film f) {
 }
 
 istream& operator>>(istream& i, Film& f) { //cin
+	void affArrIdF();
+	affArrIdF();
+	int* arrIdF();
+	int* arr = arrIdF();
+	int nrFilme();
+	int max = nrFilme();
+	//cout << max << endl;
+	int gasit = 0;
 	int id;
 	char* nume;
 	float durata;
@@ -554,10 +596,18 @@ istream& operator>>(istream& i, Film& f) { //cin
 	float start;
 	cout << "Id: ";
 	i >> id;
-	if (id > 0) {
+	for (int i = 0; i < max; i++) {
+		if (arr[i] == id) {
+			gasit = 1;
+		}
+	}
+	if (id > 0 && gasit == 0) {
 		f.setId(id);
+		
 	}
 	else {
+		cout << "Eroare la introducerea id-ului." << endl;
+		cout << "Id-ul trebuie sa fie unic si > 0." << endl;
 		f.setId(0);
 	}
 	cout << "Nume: ";
@@ -655,6 +705,7 @@ int nrFilme() {
 	}
 	else {
 		cout << "Eroare la deschiderea fisierului." << endl;
+		return 0;
 	}
 }
 
@@ -950,7 +1001,7 @@ void stergeFilm() { // sterge un film din fisier
 	affArrIdFilme();
 	cout << endl;
 	int* id = arrIdFilme();
-	cout << "Introdu id-ul filmului pe care vrei sa il stergi: " << endl;
+	cout << "Introdu id-ul filmului pe care vrei sa il stergi: (Film id: )" << endl;
 	cin >> x1;
 	for (int i = 0; i < nrFilme(); i++) {
 		if (x1 == id[i]) {
@@ -968,8 +1019,15 @@ void stergeFilm() { // sterge un film din fisier
 		if (sigur == 1) {
 			for (int i = 0; i < Map.size(); i++) {
 				if (Map[i].getFilmId() == x1) {
+					void stergeFilmDinCinema(int h, int g); // sterge filmul g din fisierul cinemaul h
+					int* arr = arrIdC();
+					int max = nrCinemauri();
 					cout << "Gasit" << endl;
+					for (int j = 0; j < max; j++) {
+						stergeFilmDinCinema(arr[j], Map[i].getId());
+					}
 					Map.erase(i);
+
 					break;
 				}
 			}
@@ -1078,15 +1136,58 @@ void schimbaAtributFilm() { //modifica atributul unui film
 }
 
 void introduFilmInCinema(int h, int b) { // introdu filmul cu id b in cinemaul h
-	int loc = 50;
-	string x, y, z;
-	x = "cinema";
-	y = ".bin";
-	z = x + to_string(h) + y;
-	ofstream f(z, ios::app | ios::binary | ios::_Nocreate);
-	f.write((char*)&b, sizeof(b));
-	f.write((char*)&loc, sizeof(loc));
-	f.close();
+	int* arr = arrIdF();
+	int* arr3 = arrIdC();
+	int max3 = nrCinemauri();
+	int gasit = 0;
+	int gasit2 = 0;
+	int gasit3 = 0;
+	int max = nrFilme();
+	for (int i = 0; i < max; i++) {
+		if (arr[i] == b) {
+			gasit = 1;
+			break;
+		}
+	}
+	if (gasit == 1) {
+		int* returnFilmeDinCinema(int);
+		int returnNrFilmeDinCinema(int);
+		int* arr2 = returnFilmeDinCinema(h);
+		int max2 = returnNrFilmeDinCinema(h);
+		for (int i = 0; i < max2; i++) {
+			if (arr2[i] == b) {
+				gasit2 = 1;
+				cout << "Filmul cu id: " << b <<" exista deja in cinemaul: "<< h << "." << endl;
+				break;
+			}
+		}
+		if (gasit2 == 0) {
+			for (int i = 0; i < max3; i++) {
+				if (arr3[i] == h) {
+					gasit3 = 1;
+					break;
+				}
+			}if (gasit3 == 1) {
+				int loc = 50;
+				string x, y, z;
+				x = "cinema";
+				y = ".bin";
+				z = x + to_string(h) + y;
+				ofstream f(z, ios::app | ios::binary | ios::_Nocreate );
+				if (f.is_open()) {
+					f.write((char*)&b, sizeof(b));
+					f.write((char*)&loc, sizeof(loc));
+					f.close();
+				}
+			}
+			else {
+				cout << "Eroare la deschiderea fisierului.(nu este creat)" << endl;
+			}
+		}
+	}
+	else {
+		cout << "Id-ul introdus nu exista." << endl;
+	}
 }
 
 int* returnFilmeDinCinema(int h){// returneaza vector de id-uri de filme din cinemaul h 
@@ -1169,6 +1270,9 @@ void afiseazaFilmInCinema(int h) { // afiseaza id-ul si numarul de locuri libere
 		f.seekg(0, ios::end);
 		int x2 = f.tellg();
 		f.seekg(0, ios::beg);
+		cout << endl;
+		cout << endl;
+		cout << "Cinema: " << h << endl;
 		while (x1 != x2) {
 			f.read((char*)&id, sizeof(id));
 			f.read((char*)&loc, sizeof(loc));
@@ -1223,5 +1327,52 @@ void stergeFilmDinCinema(int h, int g) { // sterge filmul g din fisierul cinemau
 			ff.write((char*)&it->second, sizeof(it->second));
 		}
 		ff.close();
+	}
+}
+
+void introduFilm() {
+	Film p;
+	cin >> p;
+	if (p.getId() != 0) {
+		p.serialize1();
+		ordoneazaFilmId();
+	}
+	else {
+		cout << "Filmul nu a fost introdus." << endl;
+	}
+}
+
+void stergeToateFilmeleDinCinema(int h) {
+	int* arr = arrIdF();
+	int max = nrFilme();
+	for (int i = 0; i < max; i++) {
+		stergeFilmDinCinema(h, arr[i]);
+	}
+	cout << "Toate filmele din cinemaul " << h << " au fost sterse." << endl;
+}
+
+int returnLocuriLibereFilm(int h, int g) {
+	string x, y, z;
+	x = "cinema";
+	y = ".bin";
+	z = x + to_string(h) + y;
+	int x3 = 0;
+	int x4 = 0;
+	ifstream f(z, ios::binary);
+	if (f.is_open()) {
+		int x1 = f.tellg();
+		f.seekg(0, ios::end);
+		int x2 = f.tellg();
+		f.seekg(0, ios::beg);
+		while (x1 != x2) {
+			f.read((char*)&x3, sizeof(x3));
+			f.read((char*)&x4, sizeof(x4));
+			if (x3 == g) {
+				return x4;
+			}
+			x1 = f.tellg();
+		}
+		return 0;
+		f.close();
 	}
 }

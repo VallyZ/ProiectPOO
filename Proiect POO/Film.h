@@ -248,24 +248,7 @@ public:
 			return nullptr;
 		}
 	}
-	/*
-	string* showZi() {
-		if (zi != nullptr) {
-			string* copie = new string[nrZile];
-			copie = this->getZi();
-			cout << "Zile: " << endl;
-			for (int i = 0; i < nrZile; i++) {
-				if (i != nrZile - 1) {
-					cout << copie[i] << ", ";
-				}
-				else {
-					cout << copie[i] << endl;
-				}
-			}
-		}
-		return 0;
-	}
-	*/
+
 	float getStart() {
 		return start;
 	}
@@ -328,7 +311,42 @@ public:
 			int len1 = 101;
 			int siguranta = 0;
 			for (int i = 0; i < 7; i++) {
-
+				if (zi != nullptr) {
+					if (zi[i].length() != 0 && zi[i].length() < 9 && siguranta == 0) {
+						f.write((char*)&len1, sizeof(len1));
+						f.write(zi[i].c_str(), len1);
+					}
+					else {
+						f.write((char*)&len1, sizeof(len1));
+						f.write("", len1);
+						siguranta = 1;
+					}
+				}
+			}
+			f.write((char*)&start, sizeof(start));
+			//delete[]
+			f.close();
+		}
+		else {
+			cout << "Eroare la deschiderea fisierului." << endl;
+		}
+	}
+	void serialize1BiletLaLoc(string z, int x) { // pentru a serializa in Bilet
+		fstream f(z, ios::out | ios::in | ios::binary);
+		if (f.is_open()) {
+			int y = f.tellp();
+			cout << y << endl;
+			f.seekp(x);
+			f.write((char*)&filmId, sizeof(filmId));
+			f.write((char*)&id, sizeof(id));
+			int len = 101;
+			f.write((char*)&len, sizeof(len));
+			f.write(nume, len);
+			f.write((char*)&durata, sizeof(durata));
+			f.write((char*)&nrZile, sizeof(nrZile));
+			int len1 = 101;
+			int siguranta = 0;
+			for (int i = 0; i < 7; i++) {
 				if (zi != nullptr) {
 					if (zi[i].length() != 0 && zi[i].length() < 9 && siguranta == 0) {
 						f.write((char*)&len1, sizeof(len1));
@@ -361,14 +379,18 @@ public:
 			f.write((char*)&durata, sizeof(durata));
 			f.write((char*)&nrZile, sizeof(nrZile));
 			int len1 = 101;
+			int siguranta = 0;
 			for (int i = 0; i < 7; i++) {
-				if (zi[i].length() != 0 && zi[i].length() < 9) {
-					f.write((char*)&len1, sizeof(len1));
-					f.write(zi[i].c_str(), len1);
-				}
-				else {
-					f.write((char*)&len1, sizeof(len1));
-					f.write("", len1);
+				if (zi != nullptr) {
+					if (zi[i].length() != 0 && zi[i].length() < 9 && siguranta == 0) {
+						f.write((char*)&len1, sizeof(len1));
+						f.write(zi[i].c_str(), len1);
+					}
+					else {
+						f.write((char*)&len1, sizeof(len1));
+						f.write("", len1);
+						siguranta = 1;
+					}
 				}
 			}
 			f.write((char*)&start, sizeof(start));
@@ -727,7 +749,7 @@ void ordoneazaFilmId() {
 	if (f.is_open()) {
 		int filmId = 1;
 		for (int i = 0; i < nrFilme(); i++) {
-			f.seekg((long long)i * 860);
+			f.seekg(i * 860);
 			f.write((char*)&filmId, sizeof(filmId));
 			filmId++;
 		}

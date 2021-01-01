@@ -243,26 +243,26 @@ int main() {
 	Bilet pppp("Vali1", 2, var);
 	Bilet ppppp("Valentin", 1, var3);
 	Bilet pppppp("Vali", 0, nullptr);
-	//p.setFilm(a);
-	//p.setCinema(n);
-	////cout << p << endl;
-	//p.serialize1();
-	//pp.setFilm(a);
-	//pp.setCinema(n);
-	//pp.serialize1();
-	//ppp.setFilm(a);
-	//ppp.setCinema(n);
-	//ppp.serialize1();
-	//pppp.setFilm(a);
-	//pppp.setCinema(n);
-	//pppp.serialize1();
-	//ppppp.setFilm(a);
-	//ppppp.setCinema(n);
-	//ppppp.serialize1();
-	//pppppp.setFilm(a);
-	//pppppp.setCinema(n);
-	//pppppp.serialize1();
-
+	/*p.setFilm(a);
+	p.setCinema(n);
+	//cout << p << endl;
+	p.serialize1();
+	pp.setFilm(a);
+	pp.setCinema(n);
+	pp.serialize1();
+	ppp.setFilm(a);
+	ppp.setCinema(n);
+	ppp.serialize1();
+	pppp.setFilm(a);
+	pppp.setCinema(n);
+	pppp.serialize1();
+	ppppp.setFilm(a);
+	ppppp.setCinema(n);
+	ppppp.serialize1();
+	pppppp.setFilm(a);
+	pppppp.setCinema(n);
+	pppppp.serialize1();
+	*/
 	//cout << p.getFilm().getNume() << endl;
 	//cout << p.getFilm() << endl;
 	//map<int, Film> map1 = retFilme();
@@ -270,7 +270,7 @@ int main() {
 	//cout << p.getFilm() << endl;
 	//stergeCinema();
 	//introduCinema();
-	//Bilet i;
+	Bilet i;
 	//cin >> i;
 	//i.serialize1();
 	//i.deserialize(0);
@@ -281,7 +281,6 @@ int main() {
 	//cout << i << endl;
 	//i.deserialize(7365);
 	//cout << i << endl;
-	//i.serialize1();
 	//i.deserialize(9820);
 	//cout << i << endl;
 	//i.deserialize(12275);
@@ -290,13 +289,13 @@ int main() {
 	//i.getFilm().serialize1Bilet("Bilet.bin");
 	//i.serialize1();
 	//cout << i << endl;
-
+	//i.deserialize(0);
 	//Bilet g;
 	//g.deserialize(0);
 	//cout << g << endl;
 
 	//afiseazaCinemaCuId();
-
+	//ordoneazaBiletId();
 	//i.deserialize();
 	//i.serialize();
 	//afiseazaFilme();
@@ -309,8 +308,13 @@ int main() {
 	//u.serialize1();
 	////u.deserialize1(0);
 	//cout << u << endl;
+	//stergeBazaDateBilete();
+	int z = nrBilete();
+	cout << z << endl;
+	//ordoneazaBiletId();
+	//map<int, Bilet> v = citireBilete();
 
-
+	//afiseazaBilete();
 /*
 	//ofstream g;
 	//g.open("student.txt"); //nocreate, noreplace(MODE)
@@ -384,8 +388,10 @@ int main() {
 //	stergeFilm();
 	//afiseazaToateFilmeleDinCinema();
 	*/
-
-
+	//afiseazaBiletCuId();
+	//inlocuieBiletCuId();
+	//afiseazaBilete();
+	//cout << v << endl;
 /*
 	char* nume1 = nullptr;
 	int nr1 = 0;

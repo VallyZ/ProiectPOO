@@ -291,8 +291,8 @@ void serialize1() {
 	film.serialize1Bilet("Bilet.bin");
 	ofstream f("Bilet.bin", ios::app | ios::binary);
 	if (f.is_open()) {
-		int y = f.tellp();
-		cout << y << endl;
+		//int y = f.tellp();
+		//cout << y << endl;
 		f.write((char*)&id, sizeof(id));
 		int len = 101;
 		f.write((char*)&len, sizeof(len));
@@ -318,8 +318,47 @@ void serialize1() {
 				f.write("", len1);
 			}
 		}
-		y = f.tellp();
-		cout << y << endl;
+		//y = f.tellp();
+		//cout << y << endl;
+		f.close();
+	}
+}
+
+void serialize1LaLoc(int x) { // serializeaza la o anumita locatie
+	cinema.serializeBiletLaLoc("Bilet.bin", x);
+	film.serialize1BiletLaLoc("Bilet.bin", (x + 1062));
+	fstream f("Bilet.bin", ios::out | ios::in | ios::binary);
+	if (f.is_open()) {
+		//int y = f.tellp();
+		//cout << y << endl;
+		f.seekp((x + 1922));
+		f.write((char*)&id, sizeof(id));
+		int len = 101;
+		f.write((char*)&len, sizeof(len));
+		f.write(nume, len);
+		f.write((char*)&nrPersoane, sizeof(nrPersoane));
+		int len1 = 101;
+		int siguranta = 0;
+		for (int i = 0; i < 4; i++) {
+			if (persoane != nullptr) {
+
+				if (persoane[i].length() != 0 && persoane[i].length() < 20 && siguranta == 0) {
+					f.write((char*)&len1, sizeof(len1));
+					f.write(persoane[i].c_str(), len1);
+				}
+				else {
+					f.write((char*)&len1, sizeof(len1));
+					f.write("", len1);
+					siguranta = 1;
+				}
+			}
+			else {
+				f.write((char*)&len1, sizeof(len1));
+				f.write("", len1);
+			}
+		}
+		//y = f.tellp();
+		//cout << y << endl;
 		f.close();
 	}
 }
@@ -333,8 +372,8 @@ void deserialize(int x) {
 	string cinema_adresa = "";
 	int cinema_nrZile = 0;
 	if (f.is_open()) {
-		int y = f.tellg();
-		cout << y << endl;
+		//int y = f.tellg();
+		//cout << y << endl;
 		f.seekg(x);
 		f.read((char*)&cinema_id, sizeof(cinema_id));
 		f.read((char*)&cinema_id_id, sizeof(cinema_id_id));
@@ -376,8 +415,8 @@ void deserialize(int x) {
 			}
 		}
 		delete[] zi;
-		y = f.tellg();
-		cout << y << endl;
+		//y = f.tellg();
+		//cout << y << endl;
 
 		int film_filmId = 0;
 		int film_id = 0;
@@ -415,8 +454,8 @@ void deserialize(int x) {
 			delete[] aux1;
 		}
 		f.read((char*)&film_start, sizeof(film_start));
-		f.tellg();
-		cout << y << endl;
+		//f.tellg();
+		//cout << y << endl;
 		if (film_id > 0) {
 			Film placeHolder1(film_id, film_nume, film_durata, film_nrZile, zi1, film_start, film_filmId);
 			if (placeHolder1.getFilmId() > 0) {
@@ -424,8 +463,8 @@ void deserialize(int x) {
 			}
 		}
 		delete[] zi1;
-		y = f.tellg();
-		cout << y << endl;
+		int y = f.tellg();
+		cout << "Locatie id: " << y << endl;
 
 		f.read((char*)&id, sizeof(id));
 		len = 0;
@@ -452,8 +491,8 @@ void deserialize(int x) {
 			f.read(aux1, len1);
 			delete[] aux1;
 		}
-		y = f.tellg();
-		cout << y << endl;
+		//y = f.tellg();
+		//cout << y << endl;
 
 		f.close();
 	}
@@ -617,3 +656,152 @@ istream& operator>>(istream& i , Bilet& b) { // cin
 	delete[] insotitori;
 	return i;
 }
+
+int nrBilete() {
+	ifstream f("Bilet.bin", ios::binary);
+	if (f.is_open()) {
+		f.seekg(0, ios::end);
+		int x = f.tellg();
+		int z = x / 2455;
+		f.close();
+		return z;
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
+		return 0;
+	}
+}
+
+void ordoneazaBiletId() {
+	fstream f("Bilet.bin", ios::in | ios::out | ios::binary);
+	if (f.is_open()) {
+		int biletId = 1;
+		for (int i = 0; i < nrBilete(); i++) {
+			f.seekg((1922*(i+1))+(533*i)); //1922 locatia id, 533 marime bilet fara cinema si film
+			f.write((char*)&biletId, sizeof(biletId));
+			biletId++;
+		}
+		f.close();
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
+	}
+}
+
+map<int, Bilet> returnBilete() {
+	map<int, Bilet> B;
+	Bilet b;
+	int i = 0;
+	int max = nrBilete();
+	ifstream f("Bilet.bin", ios::binary);
+	if (f.is_open()) {
+		for (int j = 0; j < max; j++) {
+			b.deserialize(j * 2455);
+			B[i] = b;
+			i++;
+		}
+		f.close();
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
+	}
+	return B;
+}
+
+void stergeBazaDateBilete() {
+	ofstream f("Bilet.bin", ios::trunc | ios::binary);
+	if (f.is_open()) {
+		f.close();
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
+	}
+}
+
+void afiseazaBilete() {
+	map<int, Bilet> B = returnBilete();
+	for (int i = 0; i < B.size(); i++) {
+		cout << B[i] << endl;
+	}
+}
+
+int* arrIdBilete() {
+	int* arrIdBilete = new int[nrBilete()];
+	const int max = nrBilete();
+	ifstream f("Bilet.bin", ios::binary);
+	if (f.is_open()) {
+		for (int i = 0; i < max; i++) {
+			int x = 0;
+			f.seekg((1922 * (i + 1)) + (533 * i));
+			f.read((char*)&x, sizeof(x));
+			arrIdBilete[i] = x;
+		}
+		f.close();
+		return arrIdBilete;
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
+	}
+}
+
+void affArrIdBilete() {
+	int* arr = arrIdBilete();
+	cout << "Exista urmatoarele bilete cu Id: " << endl;
+	for (int i = 0; i < nrBilete(); i++) {
+		cout << arr[i] << " ";
+	}
+	cout << endl;
+}
+
+int locBiletCuId() { //returneaza locatia unui bilet in fisier
+	ifstream h("Bilet.bin", ios::binary);
+	if (h.is_open()) {
+		int x1 = 0;
+		int locatie = 0;
+		int gasit = 0;
+		affArrIdBilete();
+		cout << "Introdu id-ul biletului pe care vrei sa il gasesti: " << endl;
+		cin >> x1;
+		for (int i = 0; i < nrBilete(); i++) {
+			int id = 0;
+			h.seekg((1922 * (i + 1)) + (533 * i));
+			h.read((char*)&id, sizeof(id));
+			if (id == x1) {
+				locatie = h.tellg();
+				locatie -= 4;
+				locatie -= 1922;
+				gasit = 1;
+				break;
+			}
+		}h.close();
+		if (gasit != 1) {
+			cout << "Id-ul introdus nu exista." << endl;
+		}
+		else {
+			return locatie;
+		}
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
+	}
+}
+
+void afiseazaBiletCuId() {
+	int z = locBiletCuId();
+	Bilet b;
+	b.deserialize(z);
+	cout << b << endl;
+}
+
+void inlocuieBiletCuId() {
+	int x = locBiletCuId();
+	if (x < 100000) {
+		Bilet b;
+		cin >> b;
+		b.serialize1LaLoc(x);
+		ordoneazaBiletId();
+		cout << "Bilet modificat cu succes" << endl;
+	}
+}
+
+////////////Sterge Bilet ///////////

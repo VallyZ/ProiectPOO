@@ -252,14 +252,17 @@ public:
 			f.write((char*)&len, sizeof(len));
 			f.write(adresa.c_str(), len);
 			f.write((char*)&nrZile, sizeof(nrZile));
-			for (int i = 0; i < 7; i++) {
-				if (zi[i].length() != 0 && zi[i].length() < 9) {
+			int i = 0;
+			int siguranta = 0;
+			for (i; i < 7; i++) {
+				if (!zi[i].empty() && zi[i].length() < 9 && siguranta == 0) {
 					f.write((char*)&len, sizeof(len));
 					f.write(zi[i].c_str(), len);
 				}
 				else {
 					f.write((char*)&len, sizeof(len));
 					f.write("", len);
+					siguranta = 1;
 				}
 			}
 			f.close();
@@ -288,11 +291,6 @@ public:
 			int siguranta = 0;
 			for (i; i < 7; i++) {
 				if (!zi[i].empty() && zi[i].length() < 9 && siguranta ==0) {
-					//for (int j = 0; j < zi[i].length(); j++) {
-					//	cout << zi[i][j];
-					//	
-					//}
-					cout << endl;
 					f.write((char*)&len, sizeof(len));
 					f.write(zi[i].c_str(), len);
 				}
@@ -308,6 +306,43 @@ public:
 			cout << "Eroare la deschiderea fisierului." << endl;
 		}
 	}
+
+	void serializeBiletLaLoc(string x, int z) { //  pentru a serializa in Bilet.bin la o anumita locatie
+		fstream f(x, ios::out | ios::in | ios::binary);
+		if (f.is_open()) {
+			int y = f.tellp();
+			cout << y << endl;
+			f.seekp(z);
+			f.write((char*)&cinemaId, sizeof(cinemaId));
+			f.write((char*)&id, sizeof(id));
+			int len = 101;
+			f.write((char*)&len, sizeof(len));
+			f.write(nume, len);
+			f.write((char*)&len, sizeof(len));
+			f.write(oras.c_str(), len);
+			f.write((char*)&len, sizeof(len));
+			f.write(adresa.c_str(), len);
+			f.write((char*)&nrZile, sizeof(nrZile));
+			int i = 0;
+			int siguranta = 0;
+			for (i; i < 7; i++) {
+				if (!zi[i].empty() && zi[i].length() < 9 && siguranta == 0) {
+					f.write((char*)&len, sizeof(len));
+					f.write(zi[i].c_str(), len);
+				}
+				else {
+					f.write((char*)&len, sizeof(len));
+					f.write("", len);
+					siguranta = 1;
+				}
+			}
+			f.close();
+		}
+		else {
+			cout << "Eroare la deschiderea fisierului." << endl;
+		}
+	}
+
 	void serialize(int x) {
 		fstream f("Cinema.bin", ios::out | ios::in | ios::binary);
 		if (f.is_open()) {
@@ -322,14 +357,17 @@ public:
 			f.write((char*)&len, sizeof(len));
 			f.write(adresa.c_str(), len);
 			f.write((char*)&nrZile, sizeof(nrZile));
-			for (int i = 0; i < 7; i++) {
-				if (zi[i].length() != 0 && zi[i].length() < 9) {
+			int i = 0;
+			int siguranta = 0;
+			for (i; i < 7; i++) {
+				if (!zi[i].empty() && zi[i].length() < 9 && siguranta == 0) {
 					f.write((char*)&len, sizeof(len));
 					f.write(zi[i].c_str(), len);
 				}
 				else {
 					f.write((char*)&len, sizeof(len));
 					f.write("", len);
+					siguranta = 1;
 				}
 			}
 			f.close();

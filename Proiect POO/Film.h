@@ -284,6 +284,8 @@ public:
 	void serialize1() { // Scrie in fisier binar un obiect.
 		ofstream f("Film1.bin", ios::app | ios::binary);
 		if (f.is_open()) {
+			int y = f.tellp();
+			cout << y << endl;
 			f.write((char*)&filmId, sizeof(filmId));
 			f.write((char*)&id, sizeof(id));
 			int len = 101;
@@ -303,6 +305,8 @@ public:
 				}
 			}
 			f.write((char*)&start, sizeof(start));
+			y = f.tellp();
+			cout << y << endl;
 			f.close();
 		}
 		else {
@@ -322,16 +326,18 @@ public:
 			f.write((char*)&durata, sizeof(durata));
 			f.write((char*)&nrZile, sizeof(nrZile));
 			int len1 = 101;
+			int siguranta = 0;
 			for (int i = 0; i < 7; i++) {
 
 				if (zi != nullptr) {
-					if (zi[i].length() != 0 && zi[i].length() < 9) {
+					if (zi[i].length() != 0 && zi[i].length() < 9 && siguranta == 0) {
 						f.write((char*)&len1, sizeof(len1));
 						f.write(zi[i].c_str(), len1);
 					}
 					else {
 						f.write((char*)&len1, sizeof(len1));
 						f.write("", len1);
+						siguranta = 1;
 					}
 				}
 			}
@@ -377,6 +383,8 @@ public:
 		fstream f("Film1.bin", ios::out | ios::in | ios::binary);
 		if (f.is_open()) {
 			f.seekg(x);
+			int y = f.tellg();
+			cout << y << endl;
 			f.read((char*)&filmId, sizeof(filmId));
 			f.read((char*)&id, sizeof(id));
 			int len = 0;
@@ -388,21 +396,26 @@ public:
 			f.read((char*)&nrZile, sizeof(nrZile));
 			delete[] zi;
 			zi = new string[nrZile];
-			string* zi1 = new string[nrZile];
+			//string* zi1 = new string[nrZile];
 			for (int i = 0; i < nrZile; i++) {
 				int len1 = 0;
 				f.read((char*)&len1, sizeof(len1));
 				char* aux1 = new char[len1];
 				f.read(aux1, len1);
 				zi[i] = aux1;
+				delete[] aux1;
 			}
 			for (int i = nrZile; i < 7; i++) {
 				int len1 = 0;
 				f.read((char*)&len1, sizeof(len1));
 				char* aux1 = new char[len1];
 				f.read(aux1, len1);
+				delete[] aux1;
 			}
 			f.read((char*)&start, sizeof(start));
+			//delete[] aux;
+			y = f.tellg();
+			cout << y << endl;
 			f.close();
 		}
 		else {
@@ -714,7 +727,7 @@ void ordoneazaFilmId() {
 	if (f.is_open()) {
 		int filmId = 1;
 		for (int i = 0; i < nrFilme(); i++) {
-			f.seekg(i * 860);
+			f.seekg((long long)i * 860);
 			f.write((char*)&filmId, sizeof(filmId));
 			filmId++;
 		}
@@ -745,6 +758,7 @@ map<int, Film> citireFilme() { // afiseaza toate filmele din fisier
 			char* aux = new char[len];
 			f.read(aux, len);
 			nume = aux;
+			
 			f.read((char*)&durata, sizeof(durata));
 			f.read((char*)&nrZile, sizeof(nrZile));
 			string* zi = new string[nrZile];
@@ -754,12 +768,14 @@ map<int, Film> citireFilme() { // afiseaza toate filmele din fisier
 				char* aux1 = new char[len1];
 				f.read(aux1, len1);
 				zi[i] = aux1;
+				delete[] aux1;
 			}
 			for (int i = nrZile; i < 7; i++) {
 				int len1 = 0;
 				f.read((char*)&len1, sizeof(len1));
 				char* aux1 = new char[len1];
 				f.read(aux1, len1);
+				delete[] aux1;
 			}
 			f.read((char*)&start, sizeof(start));
 			if (id > 0) {
@@ -770,6 +786,8 @@ map<int, Film> citireFilme() { // afiseaza toate filmele din fisier
 				}
 			}
 			x = f.tellg();
+			//delete[] aux;
+			delete[] zi;
 		}
 		return Map;
 		f.close();
@@ -828,6 +846,7 @@ int* returnAtrLoc() { // creaza vector cu locatiile fiecarui atribut al clasei F
 		char* aux = new char[len];
 		f.read(aux, len);
 		nume = aux;
+		//delete[] aux;
 		locDurata = f.tellg();
 		f.read((char*)&durata, sizeof(durata));
 		locNrZile = f.tellg();
@@ -840,6 +859,7 @@ int* returnAtrLoc() { // creaza vector cu locatiile fiecarui atribut al clasei F
 			char* aux1 = new char[len1];
 			f.read(aux1, len1);
 			zi[i] = aux1;
+			delete[] aux1;
 		}
 		for (int i = nrZile; i < 7; i++) {
 			int len1 = 0;
@@ -847,10 +867,12 @@ int* returnAtrLoc() { // creaza vector cu locatiile fiecarui atribut al clasei F
 			f.read((char*)&len1, sizeof(len1));
 			char* aux1 = new char[len1];
 			f.read(aux1, len1);
+			delete[] aux1;
 		}
 		locStart = f.tellg();
 		f.read((char*)&start, sizeof(start));
 		static int returnDate[] = { locFilmId, locId, locNume, locDurata, locNrZile, locZi[0], locZi[1], locZi[2], locZi[3], locZi[4], locZi[5], locZi[6], locStart };
+		delete[] zi;
 		f.close();
 		return returnDate;
 	}
@@ -867,7 +889,7 @@ int* arrIdFilme() { // return array cu id-urile filmelor
 	if (f.is_open()) {
 		for (int i = 0; i < nrf; i++) {
 			int x = 0;
-			f.seekg((long long)i * 860);
+			f.seekg(i * 860);
 			f.read((char*)&x, sizeof(x));
 			arrIdFilme[i] = x;
 		}
@@ -887,7 +909,7 @@ int* arrIdF() { // return array cu id-urile introduse de la tastatura
 	if (f.is_open()) {
 		for (int i = 0; i < nrf; i++) {
 			int x = 0;
-			f.seekg((long long)i * 860);
+			f.seekg(i * 860);
 			f.read((char*)&x, sizeof(x));
 			f.read((char*)&x, sizeof(x));
 			arrIdFilme[i] = x;
@@ -996,6 +1018,7 @@ void inlocuieFilmCuId() { // inlocuie un film cu unul introdus de la tastatura
 }
 
 void stergeFilm() { // sterge un film din fisier
+	afiseazaFilme();
 	int x1 = 0;
 	int gasit = 0;
 	affArrIdFilme();
@@ -1083,6 +1106,7 @@ void schimbaAtributFilm() { //modifica atributul unui film
 		if (strlen(nume) > 0) {
 			o.setNume(nume);
 			o.serialize1(x1);
+			//delete[] nume;
 			break;
 		}
 		else {
@@ -1112,6 +1136,7 @@ void schimbaAtributFilm() { //modifica atributul unui film
 			}
 			o.setZi(y, x4);
 			o.serialize1(x1);
+			//delete[]y;
 			break;
 		}
 		else {

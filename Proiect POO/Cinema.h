@@ -284,14 +284,22 @@ public:
 			f.write((char*)&len, sizeof(len));
 			f.write(adresa.c_str(), len);
 			f.write((char*)&nrZile, sizeof(nrZile));
-			for (int i = 0; i < 7; i++) {
-				if (zi[i].length() != 0 && zi[i].length() < 9) {
+			int i = 0;
+			int siguranta = 0;
+			for (i; i < 7; i++) {
+				if (!zi[i].empty() && zi[i].length() < 9 && siguranta ==0) {
+					//for (int j = 0; j < zi[i].length(); j++) {
+					//	cout << zi[i][j];
+					//	
+					//}
+					cout << endl;
 					f.write((char*)&len, sizeof(len));
 					f.write(zi[i].c_str(), len);
 				}
 				else {
 					f.write((char*)&len, sizeof(len));
 					f.write("", len);
+					siguranta = 1;
 				}
 			}
 			f.close();
@@ -341,16 +349,19 @@ public:
 			char* aux = new char[len];
 			f.read(aux, len);
 			nume = aux;
+			
 			int len1 = 0;
 			f.read((char*)&len1, sizeof(len1));
 			char* aux1 = new char[len1];
 			f.read(aux1, len1);
 			oras = aux1;
+			delete[] aux1;
 			int len2 = 0;
 			f.read((char*)&len2, sizeof(len2));
 			char* aux2 = new char[len2];
 			f.read(aux2, len2);
 			adresa = aux2;
+			delete[] aux2;
 			f.read((char*)&nrZile, sizeof(nrZile));
 			delete[] zi;
 			zi = new string[nrZile];
@@ -360,15 +371,18 @@ public:
 				char* aux1 = new char[len];
 				f.read(aux1, len);
 				zi[i] = aux1;
+				delete[] aux1;
 			}
 			for (int i = nrZile; i < 7; i++) {
 				int len1 = 0;
 				f.read((char*)&len1, sizeof(len1));
 				char* aux1 = new char[len1];
 				f.read(aux1, len1);
+				delete[] aux1;
 			}
 			//int u = f.tellg(); // 1062
 			//cout << u << endl;
+			//delete[] aux;
 			f.close();
 		}
 		else {
@@ -585,6 +599,7 @@ istream& operator>>(istream& i, Cinema& c) { //cin
 		i >> zi[y];
 	}
 	c.setZi(zi, nrZile);
+	delete[] zi;
 	return i;
 }
 ifstream& operator>>(ifstream& i, Cinema& c) {
@@ -615,6 +630,7 @@ ifstream& operator>>(ifstream& i, Cinema& c) {
 				i >> zi[y];
 			}
 			c.setZi(zi, nrZile);
+			delete[] zi;
 		}
 		else {
 			c.nrZile = 0;
@@ -644,7 +660,7 @@ void ordoneazaCinemaId() {
 		int cinemaId = 1;
 		int max = nrCinemauri();
 		for (int i = 0; i < max; i++) {
-			f.seekg(i * 1062);
+			f.seekg((long long)i * 1062);
 			f.write((char*)&cinemaId, sizeof(cinemaId));
 			cinemaId++;
 		}
@@ -676,14 +692,17 @@ set<Cinema> citireCinemauri() {
 			char* aux = new char[len];
 			f.read(aux, len);
 			nume = aux;
+			//
 			f.read((char*)&len, sizeof(len));
 			char* aux1 = new char[len];
 			f.read(aux1, len);
 			oras = aux1;
+			delete[] aux1;
 			f.read((char*)&len, sizeof(len));
 			char* aux2 = new char[len];
 			f.read(aux2, len);
 			adresa = aux2;
+			delete[] aux2;
 			f.read((char*)&nrZile, sizeof(nrZile));
 			string* zi = new string[nrZile];
 			for (int i = 0; i < nrZile; i++) {
@@ -692,12 +711,14 @@ set<Cinema> citireCinemauri() {
 				char* aux1 = new char[len1];
 				f.read(aux1, len1);
 				zi[i] = aux1;
+				delete[] aux1;
 			}
 			for (int i = nrZile; i < 7; i++) {
 				int len1 = 0;
 				f.read((char*)&len1, sizeof(len1));
 				char* aux1 = new char[len1];
 				f.read(aux1, len1);
+				delete[] aux1;
 			}
 			if (id > 0) {
 				Cinema placeholder(id, nume, oras, adresa, nrZile, zi, cinemaId);
@@ -705,6 +726,8 @@ set<Cinema> citireCinemauri() {
 					Set.insert(placeholder);
 				}
 			}
+			//delete[] aux;
+			delete[] zi;
 			x = f.tellg();
 		}
 		//ordoneazaCinemaId();
@@ -757,7 +780,7 @@ int* arrIdCinemauri() { // return array cu id-urile cinemaurilor
 	if (f.is_open()) {
 		for (int i = 0; i < nrf; i++) {
 			int x = 0;
-			f.seekg((long long)i * 1062);
+			f.seekg(i * 1062);
 			f.read((char*)&x, sizeof(x));
 			arrIdCinemauri[i] = x;
 		}
@@ -777,7 +800,7 @@ int* arrIdC() { // return array cu id-urile cinemaurilor introduse de utilizator
 	if (f.is_open()) {
 		for (int i = 0; i < nrf; i++) {
 			int x = 0;
-			f.seekg((long long)i * 1062);
+			f.seekg(i * 1062);
 			f.read((char*)&x, sizeof(x));
 			f.read((char*)&x, sizeof(x));
 			arrId[i] = x;
@@ -931,6 +954,7 @@ void inlocuieCinemaCuId() { // inlocuie un cinema cu unul introdus de la tastatu
 }
 
 void stergeCinema() { // sterge un cinema din fisier
+	afiseazaCinemauri();
 	int x1 = 0;
 	int gasit = 0;
 	int max = nrCinemauri();
@@ -1021,6 +1045,7 @@ void schimbaAtributCinema() { //modifica atributul unui cinema
 		if (strlen(nume) > 0) {
 			o.setNume(nume);
 			o.serialize(x1);
+			//delete[] nume;
 			break;
 		}
 		else {
@@ -1067,6 +1092,7 @@ void schimbaAtributCinema() { //modifica atributul unui cinema
 			}
 			o.setZi(y, x5);
 			o.serialize(x1);
+			//delete[] y;
 			break;
 		}
 		else {

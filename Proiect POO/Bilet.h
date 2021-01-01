@@ -91,7 +91,7 @@ public:
 	}
 
 	Bilet& operator=(const Bilet& b) {
-		const_cast<int&>(this->id) = id;
+		const_cast<int&>(this->id) = b.id;
 		film = b.film;
 		cinema = b.cinema;
 		if (b.nume != nullptr) {
@@ -183,7 +183,7 @@ public:
 	Film getFilm() {
 		return film;
 	}
-
+	/*
 	void serialize() {
 
 		//cinema.serializeBilet("Bilet.bin");
@@ -206,6 +206,7 @@ public:
 			int len = 101;
 			f.write((char*)&len, sizeof(len));
 			f.write(cinema_nume, len);
+			//delete[] cinema_nume;
 			f.write((char*)&len, sizeof(len));
 			f.write(cinema_oras.c_str(), len);
 			f.write((char*)&len, sizeof(len));
@@ -225,6 +226,7 @@ public:
 					}
 				}
 			}
+			delete[] zi;
 			int y = f.tellp();
 			cout << y << endl;
 
@@ -238,6 +240,7 @@ public:
 			zi1 = film.getZi();
 			float film_start = film.getStart();
 			strcpy_s(film_nume, strlen(film.getNume()) + 1, film.getNume());
+			//delete[] film_nume;
 			f.write((char*)&film_filmId, sizeof(film_filmId));
 			f.write((char*)&film_id, sizeof(film_id));
 			len = 101;
@@ -256,6 +259,7 @@ public:
 					f.write("", len1);
 				}
 			}
+			delete[] zi1;
 			f.write((char*)&film_start, sizeof(film_start));
 
 			y = f.tellp();
@@ -280,169 +284,183 @@ public:
 			cout << y << endl;
 			f.close();
 		}
-	}
-
-	void serialize1() {
-
-		cinema.serializeBilet("Bilet.bin");
-
-		film.serialize1Bilet("Bilet.bin");
-		ofstream f("Bilet.bin", ios::app | ios::binary);
-		if (f.is_open()) {
-			int y = f.tellp();
-			cout << y << endl;
-			f.write((char*)&id, sizeof(id));
-			int len = 101;
-			f.write((char*)&len, sizeof(len));
-			f.write(nume, len);
-			f.write((char*)&nrPersoane, sizeof(nrPersoane));
-			int len1 = 101;
-			for (int i = 0; i < 5; i++) {
-
-				if (persoane != nullptr) {
-					if (persoane[i].length() != 0 && persoane[i].length() < 20) {
-						f.write((char*)&len1, sizeof(len1));
-						f.write(persoane[i].c_str(), len1);
-					}
-					else {
-						f.write((char*)&len1, sizeof(len1));
-						f.write("", len1);
-					}
-				}
-			}
-			y = f.tellp();
-			cout << y << endl;
-			f.close();
-		}
-	}
-
-	/*void deserialize(int x) {
-		fstream f("Bilet.bin", ios::in | ios::out | ios::binary);
-		int cinema_id = 0;
-		int cinema_id_id = 0;
-		char* cinema_nume = nullptr;
-		//strcpy_s(cinema_nume, strlen(cinema.getNume()) + 1, cinema.getNume());
-		string cinema_oras = "";
-		string cinema_adresa = "";
-		int cinema_nrZile = 0;
-		//string* zi = new string[cinema_nrZile];
-		if (f.is_open()) {
-			f.seekg(x);
-			f.read((char*)&cinema_id, sizeof(cinema_id));
-			f.read((char*)&cinema_id_id, sizeof(cinema_id_id));
-			int len = 0;
-			f.read((char*)&len, sizeof(len));
-			char* aux = new char[len];
-			f.read(aux, len);
-			cinema_nume = aux;
-			f.read((char*)&len, sizeof(len));
-			char* aux1 = new char[len];
-			f.read(aux1, len);
-			cinema_oras = aux1;
-			f.read((char*)&len, sizeof(len));
-			char* aux2 = new char[len];
-			f.read(aux2, len);
-			cinema_adresa = aux2;
-			f.read((char*)&cinema_nrZile, sizeof(cinema_nrZile));
-			string* zi = new string[cinema_nrZile];
-			for (int i = 0; i < cinema_nrZile; i++) {
-				int len1 = 0;
-				f.read((char*)&len1, sizeof(len1));
-				char* aux1 = new char[len1];
-				f.read(aux1, len1);
-				zi[i] = aux1;
-			}
-			for (int i = cinema_nrZile; i < 7; i++) {
-				int len1 = 0;
-				f.read((char*)&len1, sizeof(len1));
-				char* aux1 = new char[len1];
-				f.read(aux1, len1);
-			}
-			if (cinema_id_id > 0) {
-				Cinema placeholder(cinema_id_id, cinema_nume, cinema_oras, cinema_adresa, cinema_nrZile, zi, cinema_id);
-				if (placeholder.getCinemaId() > 0) {
-					setCinema(placeholder);
-				}
-			}
-			int y = f.tellg();
-			cout << y << endl;
-
-			int film_filmId = 0;
-			int film_id = 0;
-			char* film_nume = nullptr;
-			//strcpy_s(film_nume, strlen(film.getNume()) + 1, film.getNume());
-			float film_durata = 0;
-			int film_nrZile = 0;
-			//zi1 = film.getZi();
-			float film_start = 0;
-			f.read((char*)&film_filmId, sizeof(film_filmId));
-			f.read((char*)&film_id, sizeof(film_id));
-			len = 0;
-			f.read((char*)&len, sizeof(len));
-			char* aux5 = new char[len];
-			f.read(aux5, len);
-			film_nume = aux5;
-			f.read((char*)&film_durata, sizeof(film_durata));
-			f.read((char*)&film_nrZile, sizeof(film_nrZile));
-			//delete[] zi;
-			string* zi1 = new string[film_nrZile];
-			for (int i = 0; i < film_nrZile; i++) {
-				int len1 = 0;
-				f.read((char*)&len1, sizeof(len1));
-				char* aux1 = new char[len1];
-				f.read(aux1, len1);
-				zi1[i] = aux1;
-			}
-			for (int i = film_nrZile; i < 7; i++) {
-				int len1 = 0;
-				f.read((char*)&len1, sizeof(len1));
-				char* aux1 = new char[len1];
-				f.read(aux1, len1);
-			}
-			f.read((char*)&film_start, sizeof(film_start));
-			f.tellg();
-			cout << y << endl;
-			if (film_id > 0) {
-				Film placeHolder1(film_id, film_nume, film_durata, film_nrZile, zi1, film_start, film_filmId);
-				if (placeHolder1.getFilmId() > 0) {
-					setFilm(placeHolder1);
-				}
-			}
-
-			y = f.tellg();
-			cout << y << endl;
-
-			f.read((char*)&id, sizeof(id));
-			len = 0;
-			f.read((char*)&len, sizeof(len));
-			char* aux3 = new char[len];
-			f.read(aux3, len);
-			nume = aux3;
-			f.read((char*)&nrPersoane, sizeof(nrPersoane));
-			delete[] persoane;
-			persoane = new string[nrPersoane];
-			for (int i = 0; i < nrPersoane; i++) {
-				int len1 = 0;
-				f.read((char*)&len1, sizeof(len1));
-				char* aux1 = new char[len1];
-				f.read(aux1, len1);
-				persoane[i] = aux1;
-			}
-			for (int i = nrPersoane; i < 4; i++) {
-				int len1 = 0;
-				f.read((char*)&len1, sizeof(len1));
-				char* aux1 = new char[len1];
-				f.read(aux1, len1);
-			}
-			y = f.tellg();
-			cout << y << endl;
-
-			f.close();
-		}
-		else {
-			cout << "Eroare la deschiderea fisierului." << endl;
-		}
 	}*/
+
+void serialize1() {
+	cinema.serializeBilet("Bilet.bin");
+	film.serialize1Bilet("Bilet.bin");
+	ofstream f("Bilet.bin", ios::app | ios::binary);
+	if (f.is_open()) {
+		int y = f.tellp();
+		cout << y << endl;
+		f.write((char*)&id, sizeof(id));
+		int len = 101;
+		f.write((char*)&len, sizeof(len));
+		f.write(nume, len);
+		f.write((char*)&nrPersoane, sizeof(nrPersoane));
+		int len1 = 101;
+		int siguranta = 0;
+		for (int i = 0; i < 4; i++) {
+			if (persoane != nullptr) {
+
+				if (persoane[i].length() != 0 && persoane[i].length() < 20 && siguranta == 0) {
+					f.write((char*)&len1, sizeof(len1));
+					f.write(persoane[i].c_str(), len1);
+				}
+				else {
+					f.write((char*)&len1, sizeof(len1));
+					f.write("", len1);
+					siguranta = 1;
+				}
+			}
+			else {
+				f.write((char*)&len1, sizeof(len1));
+				f.write("", len1);
+			}
+		}
+		y = f.tellp();
+		cout << y << endl;
+		f.close();
+	}
+}
+
+void deserialize(int x) {
+	fstream f("Bilet.bin", ios::in | ios::out | ios::binary);
+	int cinema_id = 0;
+	int cinema_id_id = 0;
+	char* cinema_nume = nullptr;
+	string cinema_oras = "";
+	string cinema_adresa = "";
+	int cinema_nrZile = 0;
+	if (f.is_open()) {
+		int y = f.tellg();
+		cout << y << endl;
+		f.seekg(x);
+		f.read((char*)&cinema_id, sizeof(cinema_id));
+		f.read((char*)&cinema_id_id, sizeof(cinema_id_id));
+		int len = 0;
+		f.read((char*)&len, sizeof(len));
+		char* aux = new char[len];
+		f.read(aux, len);
+		cinema_nume = aux;
+		//delete[] aux;
+		f.read((char*)&len, sizeof(len));
+		char* aux1 = new char[len];
+		f.read(aux1, len);
+		cinema_oras = aux1;
+		delete[] aux1;
+		f.read((char*)&len, sizeof(len));
+		char* aux2 = new char[len];
+		f.read(aux2, len);
+		cinema_adresa = aux2;
+		delete[] aux2;
+		f.read((char*)&cinema_nrZile, sizeof(cinema_nrZile));
+		string* zi = new string[cinema_nrZile];
+		for (int i = 0; i < cinema_nrZile; i++) {
+			int len1 = 0;
+			f.read((char*)&len1, sizeof(len1));
+			char* aux1 = new char[len1];
+			f.read(aux1, len1);
+			zi[i] = aux1;
+		}
+		for (int i = cinema_nrZile; i < 7; i++) {
+			int len1 = 0;
+			f.read((char*)&len1, sizeof(len1));
+			char* aux1 = new char[len1];
+			f.read(aux1, len1);
+		}
+		if (cinema_id_id > 0) {
+			Cinema placeholder(cinema_id_id, cinema_nume, cinema_oras, cinema_adresa, cinema_nrZile, zi, cinema_id);
+			if (placeholder.getCinemaId() > 0) {
+				setCinema(placeholder);
+			}
+		}
+		delete[] zi;
+		y = f.tellg();
+		cout << y << endl;
+
+		int film_filmId = 0;
+		int film_id = 0;
+		char* film_nume = nullptr;
+		//strcpy_s(film_nume, strlen(film.getNume()) + 1, film.getNume());
+		float film_durata = 0;
+		int film_nrZile = 0;
+		//zi1 = film.getZi();
+		float film_start = 0;
+		f.read((char*)&film_filmId, sizeof(film_filmId));
+		f.read((char*)&film_id, sizeof(film_id));
+		len = 0;
+		f.read((char*)&len, sizeof(len));
+		char* aux5 = new char[len];
+		f.read(aux5, len);
+		film_nume = aux5;
+		//delete[] aux5;
+		f.read((char*)&film_durata, sizeof(film_durata));
+		f.read((char*)&film_nrZile, sizeof(film_nrZile));
+		//delete[] zi;
+		string* zi1 = new string[film_nrZile];
+		for (int i = 0; i < film_nrZile; i++) {
+			int len1 = 0;
+			f.read((char*)&len1, sizeof(len1));
+			char* aux1 = new char[len1];
+			f.read(aux1, len1);
+			zi1[i] = aux1;
+			delete[] aux1;
+		}
+		for (int i = film_nrZile; i < 7; i++) {
+			int len1 = 0;
+			f.read((char*)&len1, sizeof(len1));
+			char* aux1 = new char[len1];
+			f.read(aux1, len1);
+			delete[] aux1;
+		}
+		f.read((char*)&film_start, sizeof(film_start));
+		f.tellg();
+		cout << y << endl;
+		if (film_id > 0) {
+			Film placeHolder1(film_id, film_nume, film_durata, film_nrZile, zi1, film_start, film_filmId);
+			if (placeHolder1.getFilmId() > 0) {
+				setFilm(placeHolder1);
+			}
+		}
+		delete[] zi1;
+		y = f.tellg();
+		cout << y << endl;
+
+		f.read((char*)&id, sizeof(id));
+		len = 0;
+		f.read((char*)&len, sizeof(len));
+		char* aux3 = new char[len];
+		f.read(aux3, len);
+		nume = aux3;
+		//delete[] aux3;
+		f.read((char*)&nrPersoane, sizeof(nrPersoane));
+		delete[] persoane;
+		persoane = new string[nrPersoane];
+		for (int i = 0; i < nrPersoane; i++) {
+			int len1 = 0;
+			f.read((char*)&len1, sizeof(len1));
+			char* aux1 = new char[len1];
+			f.read(aux1, len1);
+			persoane[i] = aux1;
+			delete[] aux1;
+		}
+		for (int i = nrPersoane; i < 4; i++) {
+			int len1 = 0;
+			f.read((char*)&len1, sizeof(len1));
+			char* aux1 = new char[len1];
+			f.read(aux1, len1);
+			delete[] aux1;
+		}
+		y = f.tellg();
+		cout << y << endl;
+
+		f.close();
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
+	}
+}
 
 	friend ostream& operator<<(ostream&, Bilet);
 	friend istream& operator>>(istream&, Bilet&);
@@ -590,10 +608,12 @@ istream& operator>>(istream& i , Bilet& b) { // cin
 		i >> nrInsotitori;
 	}
 	string* insotitori = new string[nrInsotitori];
+	i.ignore(1);
 	for (int y = 0; y < nrInsotitori; y++) {
 		cout << "Insotitor[" << y + 1 << "]: ";
-		i >> insotitori[y];
+		getline(i, insotitori[y]);
 	}
 	b.setPersoane(insotitori, nrInsotitori);
+	delete[] insotitori;
 	return i;
 }

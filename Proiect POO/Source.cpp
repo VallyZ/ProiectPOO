@@ -233,11 +233,35 @@ int main() {
 	//Consumabil uu(2, "Fanta", "ml", 0, nullptr);
 	//cout << a.getZi()[1] << endl;
 
-	string var[] = { "Gigel", "Tudor", "Andrei" };
-	Bilet p("Vali", 3, var);
-	p.setFilm(a);
-	p.setCinema(n);
-	//cout << p << endl;
+	string var[] = { "Gigel", "Tudor"};
+	string var1[] = { "Gigel Mihai", "Tudor Daniel", "Andrei" };
+	string var2[] = { "Gigel Mihai", "Tudorache", "Andrei Savu Dan" };
+	string var3[] = { "Gigel Mihai" };
+	Bilet p("Vali4", 3, var1);
+	Bilet pp("Vali3 Mailat", 2, var);
+	Bilet ppp("Vali2 Eugen Mihai", 3, var2);
+	Bilet pppp("Vali1", 2, var);
+	Bilet ppppp("Valentin", 1, var3);
+	Bilet pppppp("Vali", 0, nullptr);
+	//p.setFilm(a);
+	//p.setCinema(n);
+	////cout << p << endl;
+	//p.serialize1();
+	//pp.setFilm(a);
+	//pp.setCinema(n);
+	//pp.serialize1();
+	//ppp.setFilm(a);
+	//ppp.setCinema(n);
+	//ppp.serialize1();
+	//pppp.setFilm(a);
+	//pppp.setCinema(n);
+	//pppp.serialize1();
+	//ppppp.setFilm(a);
+	//ppppp.setCinema(n);
+	//ppppp.serialize1();
+	//pppppp.setFilm(a);
+	//pppppp.setCinema(n);
+	//pppppp.serialize1();
 
 	//cout << p.getFilm().getNume() << endl;
 	//cout << p.getFilm() << endl;
@@ -246,10 +270,32 @@ int main() {
 	//cout << p.getFilm() << endl;
 	//stergeCinema();
 	//introduCinema();
-	Bilet i;
-	cin >> i;
-	i.serialize1();
-	cout << i << endl;
+	//Bilet i;
+	//cin >> i;
+	//i.serialize1();
+	//i.deserialize(0);
+	//cout << i << endl;
+	//i.deserialize(2455);
+	//cout << i << endl;
+	//i.deserialize(4910);
+	//cout << i << endl;
+	//i.deserialize(7365);
+	//cout << i << endl;
+	//i.serialize1();
+	//i.deserialize(9820);
+	//cout << i << endl;
+	//i.deserialize(12275);
+	//cout << i << endl;
+	//i.getCinema().serializeBilet("Bilet.bin");
+	//i.getFilm().serialize1Bilet("Bilet.bin");
+	//i.serialize1();
+	//cout << i << endl;
+
+	//Bilet g;
+	//g.deserialize(0);
+	//cout << g << endl;
+
+	//afiseazaCinemaCuId();
 
 	//i.deserialize();
 	//i.serialize();
@@ -257,6 +303,14 @@ int main() {
 	//afiseazaFilmInCinema(1);
 	//stergeFilmDinCinema(1, 3);
 	//afiseazaFilmInCinema(1);
+
+	//Film u;
+	//cin >> u;
+	//u.serialize1();
+	////u.deserialize1(0);
+	//cout << u << endl;
+
+
 /*
 	//ofstream g;
 	//g.open("student.txt"); //nocreate, noreplace(MODE)
@@ -330,19 +384,83 @@ int main() {
 //	stergeFilm();
 	//afiseazaToateFilmeleDinCinema();
 	*/
-	//afiseazaFilmInCinema(1);
-	//int u = returnLocuriLibereFilm(1, 3);
-	//cout << u << endl;
 
-	//char* u = (char*)"aaaaaaaaaaaa";
-	//cout << u << endl;
-	//char* uu = nullptr;
-	//uu = new char[strlen(u) + 1];
-	//strcpy_s(uu, strlen(u) + 1, u);
-	//cout << uu << endl;
 
-	//string* l = new string[3];
-	//l = a.getZi();
-	//cout << l[0] << endl;
-	//cout << l[1] << endl;
+/*
+	char* nume1 = nullptr;
+	int nr1 = 0;
+	string* arr = nullptr;
+
+	char buffer[101];
+	//cin.ignore(1);
+	cout << "Nume: ";
+	cin.getline(buffer, 100);
+	nume1 = new char[strlen(buffer) + 1];
+	strcpy_s(nume1, strlen(buffer) + 1, buffer);
+	cout << "Nr: ";
+	cin >> nr1;
+	arr = new string[nr1];
+	cin.ignore(1);
+	for (int i = 0; i < nr1; i++) {
+		//cin >> ws;
+		cout << "Persoana: ";
+		getline(cin, arr[i]);
+	}
+
+	cout << nume1 << endl;
+	cout << nr1 << endl;
+	for (int i = 0; i < nr1; i++) {
+		cout << arr[i] << endl;
+	}
+	ofstream f("Test.bin", ios::app, ios:: binary);
+	if (f.is_open()) {
+
+		int len = 101;
+		f.write((char*)&len, sizeof(len));
+		f.write(nume1, len);
+
+		f.write((char*)&nr1, sizeof(nr1));
+
+		for (int i = 0; i < nr1; i++) {
+			f.write((char*)&len, sizeof(len));
+			f.write(arr[i].c_str(), len);
+			f.write("\0", sizeof(char));
+		}
+		f.close();
+	}
+
+	char* nume2 = nullptr;
+	int nr2 = 0;
+	string* arr2 = nullptr;
+
+	fstream g("Test.bin", ios::in | ios::out | ios::binary);
+	if (g.is_open()) {
+		int len = 0;
+		g.read((char*)&len, sizeof(len));
+		char* aux = new char[len];
+		g.read(aux, len);
+		nume2 = aux;
+
+		g.read((char*)&nr2, sizeof(nr2));
+
+		arr2 = new string[nr2];
+		for (int i = 0; i < nr2; i++) {
+			len = 0;
+			g.read((char*)&len, sizeof(len));
+			char* aux1 = new char[len];
+			g.read(aux1, len);
+			//arr2[i] = aux1;
+			getline(g, arr2[i], '\0');
+		}
+		g.close();
+	}
+	cout << nume2 << endl;
+	cout << nr2 << endl;
+	for (int i = 0; i < nr2; i++) {
+		cout << arr2[i] << endl;
+	}
+
+	remove("Test.bin");
+
+	*/
 }   

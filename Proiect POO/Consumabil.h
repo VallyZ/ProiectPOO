@@ -296,11 +296,13 @@ public:
 			char* aux = new char[len];
 			f.read(aux, len);
 			nume = aux;
+			//delete[] aux;
 			int len1 = 0;
 			f.read((char*)&len1, sizeof(len1));
 			char* aux1 = new char[len1];
 			f.read(aux1, len1);
 			um = aux1;
+			delete[]aux1;
 			f.read((char*)&nrTopinguri, sizeof(nrTopinguri));
 			delete[] toping;
 			toping = new string[nrTopinguri];
@@ -313,12 +315,14 @@ public:
 				char* aux1 = new char[len];
 				f.read(aux1, len);
 				toping[i] = aux1;
+				delete[] aux1;
 			}
 			for (int i = nrTopinguri; i < 5; i++) {
 				int len1 = 0;
 				f.read((char*)&len1, sizeof(len1));
 				char* aux1 = new char[len1];
 				f.read(aux1, len1);
+				delete[] aux1;
 			}
 			//int y = f.tellg();// 747
 			//cout << y << endl;
@@ -502,6 +506,7 @@ istream& operator>>(istream& i, Consumabil& c) { //cin
 		i >> toping[y];
 	}
 	c.setToping(toping, nrTopinguri);
+	delete[] toping;
 	return i;
 }
 ifstream& operator>>(ifstream& i, Consumabil& c) {
@@ -529,6 +534,7 @@ ifstream& operator>>(ifstream& i, Consumabil& c) {
 				i >> toping[y];
 			}
 			c.setToping(toping, nrTopinguri);
+			delete[] toping;
 		}
 		else {
 			c.nrTopinguri = 0;
@@ -558,7 +564,7 @@ void ordoneazaConsumabilId() {
 		int consumabilId = 1;
 		int max = nrConsumabile();
 		for (int i = 0; i < max; i++) {
-			f.seekg(i * 747);
+			f.seekg((long long)i * 747);
 			f.write((char*)&consumabilId, sizeof(consumabilId));
 			consumabilId++;
 		}
@@ -590,10 +596,12 @@ list<Consumabil> citireConsumabile() {
 			char* aux = new char[len];
 			f.read(aux, len);
 			nume = aux;
+			//delete[] aux;
 			f.read((char*)&len, sizeof(len));
 			char* aux1 = new char[len];
 			f.read(aux1, len);
 			um = aux1;
+			delete[] aux1;
 			f.read((char*)&nrTopinguri, sizeof(nrTopinguri));
 			string* toping = new string[nrTopinguri];
 			if (nrTopinguri == 0) {
@@ -618,6 +626,7 @@ list<Consumabil> citireConsumabile() {
 					List.push_back(placeholder);
 				}
 			}
+			delete[] toping;
 			x = f.tellg();
 		}
 		f.close();
@@ -890,6 +899,7 @@ void schimbaAtributConsumabil() { //modifica atributul unui consumabil
 		if (strlen(nume) > 0) {
 			o.setNume(nume);
 			o.serialize(x1);
+			delete[] nume;
 			break;
 		}
 		else {
@@ -927,6 +937,7 @@ void schimbaAtributConsumabil() { //modifica atributul unui consumabil
 			}
 			o.setToping(y, x5);
 			o.serialize(x1);
+			delete[] y;
 			break;
 		}
 		else {

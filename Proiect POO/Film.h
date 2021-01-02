@@ -1092,6 +1092,7 @@ void stergeFilm() { // sterge un film din fisier
 }
 
 void schimbaAtributFilm() { //modifica atributul unui film
+	afiseazaFilme();
 	int atr = 0;
 	int x1 = 0;
 	int x2 = 0;
@@ -1100,25 +1101,36 @@ void schimbaAtributFilm() { //modifica atributul unui film
 	float x5 = 0;
 	char* nume = nullptr;
 	string nume1 = "";
-	x1 = locFilmCuId();
+	int gasit = 0;
+	//cin >> x1;
+	int* id = arrIdFilme();
+	while (gasit == 0) {
+		cout << endl;
+		x1 = locFilmCuId();
+		for (int i = 0; i < nrFilme(); i++) {
+			if (x1 < 1000000) {
+				gasit = 1;
+				//break;
+			}
+		}
+	}
 	Film o;
 	o.deserialize1(x1);
-	cout << "Modifica:\n\t1)Id\n\t2)Nume\n\t3)Durata\n\t4)Zile\n\t5)Ora de incepere\nAlegere: ";
+	cout << "Modifica:\n\t1)Nume\n\t2)Durata\n\t3)Zile\n\t4)Ora de incepere\nAlegere: ";
 	cin >> atr;
 	switch (atr) {
 	case 1:
-		cout << "Introdu noul Id: " << endl;
-		cin >> x2;
-		if (x2 > 0) {
-			o.setId(x2);
-			o.serialize1(x1);
-			break;
-		}
-		else {
-			cout << "Id-ul nu poate fi < 0." << endl;
-			break;
-		}
-	case 2:
+		//cout << "Introdu noul Id: " << endl;
+		//cin >> x2;
+		//if (x2 > 0) {
+		//	o.setId(x2);
+		//	o.serialize1(x1);
+		//	break;
+		//}
+		//else {
+		//	cout << "Id-ul nu poate fi < 0." << endl;
+		//	break;
+		//}
 		cout << "Introdu noul Nume: " << endl;
 		char buffer[101];
 		cin.ignore(1);
@@ -1135,7 +1147,7 @@ void schimbaAtributFilm() { //modifica atributul unui film
 			cout << "Numele nu poate fi null." << endl;
 			break;
 		}
-	case 3:
+	case 2:
 		cout << "Introdu noua Durata: " << endl;
 		cin >> x3;
 		if (x3 > 0) {
@@ -1147,7 +1159,7 @@ void schimbaAtributFilm() { //modifica atributul unui film
 			cout << "Durata nu poate fi < 0." << endl;
 			break;
 		}
-	case 4:
+	case 3:
 		cout << "Introdu numarul de zile(maxim 7): " << endl;
 		cin >> x4;
 		if (x4 > 0 && x4 <= 7) {
@@ -1165,7 +1177,7 @@ void schimbaAtributFilm() { //modifica atributul unui film
 			cout << "Numarul de zile nu poate fi < 0 sau > 7.";
 			break;
 		}
-	case 5:
+	case 4:
 		cout << "Introdu noua Ora de start: " << endl;
 		cin >> x5;
 		if (x5 > 0 && x5 <= 24) {
@@ -1177,6 +1189,8 @@ void schimbaAtributFilm() { //modifica atributul unui film
 			cout << "Ora de inceput nu poate fi < 0 sau > 24.";
 			break;
 		}
+	//case 5:
+
 	default:
 		cout << "Alegere invalida." << endl;
 	}
@@ -1264,6 +1278,53 @@ int* returnFilmeDinCinema(int h){// returneaza vector de id-uri de filme din cin
 	return ret;
 }
 
+int returnLocatieFilmDinCinema(int h, int g) {
+	string x, y, z;
+	x = "cinema";
+	y = ".bin";
+	z = x + to_string(h) + y;
+	fstream f(z, ios::in | ios::out | ios::binary);
+	if (f.is_open()) {
+		int x3 = 0;
+		int x4 = 0;
+		int yy = 0;
+		int returnNrFilmeDinCinema(int);
+		int max = returnNrFilmeDinCinema(h);
+		for (int i = 0; i < max; i++) {
+			yy = f.tellg();
+			f.read((char*)&x3, sizeof(x3));
+			f.read((char*)&x4, sizeof(x4));
+			if (g == x3) {
+				return yy;
+			}
+		}
+		f.close();
+		return -1;
+	}
+}
+
+void scadeLocuriLibere(int h, int u, int j) {
+	string x, y, z;
+	x = "cinema";
+	y = ".bin";
+	z = x + to_string(h) + y;
+	fstream f(z, ios::in | ios::out | ios::binary);
+	if (f.is_open()) {
+		int loc = returnLocatieFilmDinCinema(h, u) + 4;
+		int x1 = 0;
+		int x2 = 0;
+		f.seekg(loc);
+		f.read((char*)&x1, sizeof(x1));
+		f.seekg(loc);
+		x1 -= j;
+		f.write((char*)&x1, sizeof(x1));
+		f.close();
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
+	}
+}
+
 int returnNrFilmeDinCinema(int h) { // returneaza numarul de filme din cinemaul h
 	int ret = 0;
 	int i = 0;
@@ -1278,6 +1339,9 @@ int returnNrFilmeDinCinema(int h) { // returneaza numarul de filme din cinemaul 
 		int x2 = f.tellg();
 		ret = x2 / 8;
 		f.close();
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
 	}
 	return ret;
 }
@@ -1331,6 +1395,9 @@ void afiseazaFilmInCinema(int h) { // afiseaza id-ul si numarul de locuri libere
 			x1 = f.tellg();
 		}
 		f.close();
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
 	}
 }
 

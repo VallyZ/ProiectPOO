@@ -597,64 +597,79 @@ istream& operator>>(istream& i , Bilet& b) { // cin
 		}
 	}
 	int* arr2 = returnFilmeDinCinema(x1);
-	int j = 0;
-	int max2 = returnNrFilmeDinCinema(x1);
-	int x2 = 0;
-	int gasit2 = 0;
-	cout << "Selecteaza unul din urmatoarele filme care ruleaza la cinemaul cu id: " << x1 << "." << endl;
-	map<int, Film> Map = returnFilme();
-	map<int, Film> Map2;
-	int u = 0;
-	for (map<int, Film>::iterator i = Map.begin(); i != Map.end(); i++) {
-		for (int j = 0; j < max2; j++) {
-			if (i->second.getId() == arr2[j]) {
-				cout << i->second << endl;
-				Map2[u] = i->second;
-				u++;
+	if (arr2[0] > 0) {
+		int j = 0;
+		int max2 = returnNrFilmeDinCinema(x1);
+		int x2 = 0;
+		int gasit2 = 0;
+		int locFilm = 0;
+		cout << "Selecteaza unul din urmatoarele filme care ruleaza la cinemaul cu id: " << x1 << "." << endl;
+		map<int, Film> Map = returnFilme();
+		map<int, Film> Map2;
+		int u = 0;
+		for (map<int, Film>::iterator i = Map.begin(); i != Map.end(); i++) {
+			for (int j = 0; j < max2; j++) {
+				if (i->second.getId() == arr2[j]) {
+					cout << i->second << endl;
+					Map2[u] = i->second;
+					u++;
+				}
 			}
 		}
-	}
-	while (gasit2 == 0) {
-		cout << "Alege id-ul filmului dorit: (Film id: )" << endl;
-		i >> x2;
-		for (map<int, Film>::iterator i = Map2.begin(); i != Map2.end(); i++) {
-			if (i->second.getFilmId() == x2) {
-				b.setFilm(i->second);
-				gasit2 = 1;
+		while (gasit2 == 0) {
+			cout << "Alege id-ul filmului dorit: (Film id: )" << endl;
+			i >> x2;
+			for (map<int, Film>::iterator i = Map2.begin(); i != Map2.end(); i++) {
+				if (i->second.getFilmId() == x2) {
+					b.setFilm(i->second);
+					gasit2 = 1;
+				}
 			}
 		}
+		u = returnLocuriLibereFilm(x1, b.film.getId());
+		if (u >= 1) {
+			cout << "Nume: " << endl;
+			char buffer[101];
+			i.ignore(1);
+			i.getline(buffer, 100);
+			b.nume = new char[strlen(buffer) + 1];
+			strcpy_s(b.nume, strlen(buffer) + 1, buffer);
+			int z = returnLocuriLibereFilm(x1, b.film.getId()) - 1;
+			int z1 = 0;
+			if (z > 4) {
+				z1 = 4;
+			}
+			if (z >= 0 && z <= 4) {
+				z1 = z;
+			}
+			cout << z << endl;
+			cout << "Numar de insotitori: " << "(max: " << z1 << ")" << endl;
+			int nrInsotitori = -1;
+			i >> nrInsotitori;
+			while (nrInsotitori < 0 && nrInsotitori > z1) {
+				cout << "Numarul de insotitori nu poate fi negativ." << endl;
+				i >> nrInsotitori;
+			}
+			string* insotitori = new string[nrInsotitori];
+			i.ignore(1);
+			for (int y = 0; y < nrInsotitori; y++) {
+				cout << "Insotitor[" << y + 1 << "]: ";
+				getline(i, insotitori[y]);
+			}
+			b.setPersoane(insotitori, nrInsotitori);
+			scadeLocuriLibere(x1, b.film.getId(), nrInsotitori + 1);
+			delete[] insotitori;
+			return i;
+		}
+		else {
+			cout << "Nu mai sunt locuri libere la film." << endl;
+			return i;
+		}
+		
 	}
-	cout << "Nume: " << endl;
-	char buffer[101];
-	i.ignore(1);
-	i.getline(buffer, 100);
-	b.nume = new char[strlen(buffer) + 1];
-	strcpy_s(b.nume, strlen(buffer) + 1, buffer);
-	int z = returnLocuriLibereFilm(x1, b.film.getId());
-	int z1 = 0;
-	if (z > 4) {
-		z1 = 4;
+	else {
+		cout << "Cinemaul nu are filme." << endl;
 	}
-	if (z >= 0 && z <= 4) {
-		z1 = z;
-	}
-	cout << z << endl;
-	cout << "Numar de insotitori: " << "(max: " << z1 << ")" << endl;
-	int nrInsotitori = -1;
-	i >> nrInsotitori;
-	while (nrInsotitori < 0 && nrInsotitori > z1) {
-		cout << "Numarul de insotitori nu poate fi negativ." << endl;
-		i >> nrInsotitori;
-	}
-	string* insotitori = new string[nrInsotitori];
-	i.ignore(1);
-	for (int y = 0; y < nrInsotitori; y++) {
-		cout << "Insotitor[" << y + 1 << "]: ";
-		getline(i, insotitori[y]);
-	}
-	b.setPersoane(insotitori, nrInsotitori);
-	delete[] insotitori;
-	return i;
 }
 
 int nrBilete() {
@@ -805,3 +820,60 @@ void inlocuieBiletCuId() {
 }
 
 ////////////Sterge Bilet ///////////
+
+void stergeBilet() {
+	afiseazaBilete();
+	int x1 = 0;
+	int gasit = 0;
+	affArrIdBilete();
+	cout << endl;
+	int* id = arrIdBilete();
+	cout << "Introdu id-ul Biletului pe care vrei sa il stergi: " << endl;
+	cin >> x1;
+	for (int i = 0; i < nrBilete(); i++) {
+		if (x1 == id[i]) {
+			gasit = 1;
+		}
+	}if (gasit == 1) {
+		int sigur = 0;
+		map<int, Bilet>B = returnBilete();
+		for (int i = 0; i < B.size(); i++) {
+			cout << B[i] << endl;
+		}
+		cout << "Esti sigur ca vrei sa stergi biletul cu Id : " << x1 << " ?" << endl;
+		cout << "\t1)Da\n\t*)Nu\nAlegere: " << endl;
+		cin >> sigur;
+		if (sigur == 1) {
+			for (int i = 0; i < B.size(); i++) {
+				if (B[i].getId() == x1) {
+					B.erase(i);
+					break;
+				}
+			}
+			stergeBazaDateBilete();
+			for (map<int, Bilet>::iterator it = B.begin(); it != B.end(); it++) {
+				it->second.serialize1();
+			}
+			ordoneazaBiletId();
+		}
+		else {
+			cout << "Biletul nu a fost sters." << endl;
+		}
+	}
+	else {
+		cout << "Id-ul introdus nu exista." << endl;
+	}
+}
+
+void introduBilet() {
+	Bilet b;
+	cin >> b;
+	//string z = b.getNume();
+	if (b.getNume()!=nullptr) {
+		b.serialize1();
+		ordoneazaBiletId();
+	}
+	else {
+		cout << "Biletul nu a fost introdus." << endl;
+	}
+}

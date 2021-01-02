@@ -959,31 +959,43 @@ void inlocuieCinemaCuId() { // inlocuie un cinema cu unul introdus de la tastatu
 		int x1 = 0;
 		int locatie = 0;
 		int gasit = 0;
+		afiseazaCinemauri();
 		affArrIdCinemauri();
-		//cout << endl;
-		cout << "Introdu id-ul cinema-ului pe care vrei sa il inlocuiesti: " << endl;
-		cin >> x1;
-		for (int i = 0; i < 3; i++) {
-			int id = 0;
-			h.seekg((long long)i * 1062);
-			h.read((char*)&id, sizeof(id));
-			if (id == x1) {
-				locatie = h.tellg();
-				locatie -= 4;
-				gasit = 1;
-				break;
+		int sigur = 0;
+		cout << endl;
+		cout << "Esti sigur ca vrei sa modifici un cinema? \nModificarea nu va avea efect pe biletele existente si va sterge baza de date a cinemaului ales." << endl;
+		cout << "Alegere: \n\t1)Da\n\t*)Nu" << endl;
+		cin >> sigur;
+		if (sigur == 1) {
+			//cout << endl;
+			cout << "Introdu id-ul cinema-ului pe care vrei sa il inlocuiesti: (Cinema id: )" << endl;
+			cin >> x1;
+			for (int i = 0; i < 3; i++) {
+				int id = 0;
+				h.seekg((long long)i * 1062);
+				h.read((char*)&id, sizeof(id));
+				if (id == x1) {
+					locatie = h.tellg();
+					locatie -= 4;
+					gasit = 1;
+					break;
+				}
+			}h.close();
+			if (gasit == 1) {
+				Cinema test;
+				test.deserialize(locatie);
+				int zz = test.getId();
+				string z = "cinema" + to_string(zz) + ".bin";
+				remove(z.c_str());
+				void introduCinema(int);
+				introduCinema(locatie);
+				//ordoneazaCinemaId();
+				cout << "Cinema introdus cu succes." << endl;
 			}
-		}h.close();
-		if (gasit == 1) {
-			Cinema nou;
-			cin >> nou;
-			nou.serialize(locatie);
-			ordoneazaCinemaId();
-			cout << "Cinema introdus cu succes." << endl;
-		}
-		else {
-			cout << endl;
-			cout << "Id-ul introdus nu a fost gasit." << endl;
+			else {
+				cout << endl;
+				cout << "Id-ul introdus nu a fost gasit." << endl;
+			}
 		}
 	}
 	else {
@@ -1013,7 +1025,7 @@ void stergeCinema() { // sterge un cinema din fisier
 		//for (set<Cinema>::iterator i = Set.begin(); i != Set.end(); i++) {
 		//	cout << *i << endl;
 		//}
-		cout << "Esti sigur ca vrei sa stergi cinema-ul cu Id : " << x1 << " ?" << endl;
+		cout << "Esti sigur ca vrei sa stergi cinema-ul cu Id : " << x1 << " ?\nStergerea nu va avea efect pe biletele existente si va sterge baza de date a cinemaului ales." << endl;
 		cout << "\t1)Da\n\t*)Nu\nAlegere: " << endl;
 		cin >> sigur;
 		if (sigur == 1) {
@@ -1181,6 +1193,19 @@ void introduCinema() {
 	cin >> c;
 	if (c.getId() != 0) {
 		c.serialize();
+		ordoneazaCinemaId();
+		creazaFisierLocuri(c.getId());
+	}
+	else {
+		cout << "Cinemaul nu a fost introdus" << endl;
+	}
+}
+
+void introduCinema(int x) { // folosit la inlocuire Cinema
+	Cinema c;
+	cin >> c;
+	if (c.getId() != 0) {
+		c.serialize(x);
 		ordoneazaCinemaId();
 		creazaFisierLocuri(c.getId());
 	}

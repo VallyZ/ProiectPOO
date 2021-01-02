@@ -76,13 +76,13 @@ map<int,Film> citire() {
 */
 
 
-/*
+
 void stergeBazaDateFilme() {
 	ofstream f("Film.bin", ios::trunc | ios::binary);
 	f.close();
 }
-*/
 
+/*
 void resetLocuri() {
 	vector<vector<int>> v1;
 	vector<int> v2;
@@ -174,7 +174,7 @@ void schimbaLocuri() {
 		cout << "Randul si locul dorit nu exista." << endl;
 	}
 
-	/*
+	
 	vector<vector<int>> v3;
 	vector<int> v4;
 	int sizeV3 = 5;
@@ -203,8 +203,8 @@ void schimbaLocuri() {
 		}
 	}
 	k.close();
-	*/
-}
+	
+*/
 
 int main() {
 	
@@ -243,26 +243,26 @@ int main() {
 	Bilet pppp("Vali1", 2, var);
 	Bilet ppppp("Valentin", 1, var3);
 	Bilet pppppp("Vali", 0, nullptr);
-	/*p.setFilm(a);
-	p.setCinema(n);
-	//cout << p << endl;
-	p.serialize1();
-	pp.setFilm(a);
-	pp.setCinema(n);
-	pp.serialize1();
-	ppp.setFilm(a);
-	ppp.setCinema(n);
-	ppp.serialize1();
-	pppp.setFilm(a);
-	pppp.setCinema(n);
-	pppp.serialize1();
-	ppppp.setFilm(a);
-	ppppp.setCinema(n);
-	ppppp.serialize1();
-	pppppp.setFilm(a);
-	pppppp.setCinema(n);
-	pppppp.serialize1();
-	*/
+	//p.setFilm(a);
+	//p.setCinema(n);
+	////cout << p << endl;
+	//p.serialize1();
+	//pp.setFilm(a);
+	//pp.setCinema(n);
+	//pp.serialize1();
+	//ppp.setFilm(a);
+	//ppp.setCinema(n);
+	//ppp.serialize1();
+	//pppp.setFilm(a);
+	//pppp.setCinema(n);
+	//pppp.serialize1();
+	//ppppp.setFilm(a);
+	//ppppp.setCinema(n);
+	//ppppp.serialize1();
+	//pppppp.setFilm(a);
+	//pppppp.setCinema(n);
+	//pppppp.serialize1();
+	
 	//cout << p.getFilm().getNume() << endl;
 	//cout << p.getFilm() << endl;
 	//map<int, Film> map1 = retFilme();
@@ -392,6 +392,26 @@ int main() {
 	//inlocuieBiletCuId();
 	//afiseazaBilete();
 	//cout << v << endl;
+	
+	//stergeBilet();
+	//afiseazaFilme();
+	//schimbaAtributFilm();
+	//introduCinema();
+	//stergeCinema();
+	//inlocuieCinemaCuId();
+	//introduFilm();
+	//afiseazaCinemauri();
+	//introduBilet();
+	//stergeBazaDateBilete();
+	//afiseazaBilete();
+	//afiseazaBilete();
+
+	//afiseazaFilmInCinema(2);
+
+	//scadeLocuriLibere(2, 3, 1);
+	//introduBilet();
+	//afiseazaFilmInCinema(2);
+
 /*
 	char* nume1 = nullptr;
 	int nr1 = 0;

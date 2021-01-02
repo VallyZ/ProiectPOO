@@ -1155,39 +1155,15 @@ void schimbaAtributCinema() { //modifica atributul unui cinema
 }
 
 void creazaFisierLocuri(int h) {
-	//int* arr = arrIdC();
-	//int max = nrCinemauri();
-	//int gasit = 0;
-	//for (int i = 0; i < max; i++) {
-	//	if (arr[i] == h) {
-	//		gasit = 1;
-	//		break;
-	//	}
-	//}
-	//if (gasit == 0) {
-		string x = "cinema";
-		string u = to_string(h);
-		string y = ".bin";
-		string z = x + u + y;
-		ofstream f;
-		f.open(z, ios::_Noreplace);
-		f.close();
-	//}
-	//else {
-	//	cout << "Exista deja fisierul cu id: " << h << "." << endl;
-	//}
+	string x = "cinema";
+	string u = to_string(h);
+	string y = ".bin";
+	string z = x + u + y;
+	ofstream f;
+	f.open(z, ios::_Noreplace);
+	f.close();
 }
-//void reseteazaFisierLocuri(int h) {
-//	if (h > 0) {
-//		string x, y, z;
-//		x = "cinema";
-//		y = ".bin";
-//		z = x + to_string(h) + y;
-//		ofstream f(z, ios::trunc | ios::binary);
-//		//f.write((char*)&h, sizeof(h));
-//		f.close();
-//	}
-//}
+
 void introduCinema() {
 	Cinema c;
 	cin >> c;

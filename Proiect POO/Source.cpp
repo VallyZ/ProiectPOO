@@ -237,8 +237,9 @@ int main() {
 	string var1[] = { "Gigel Mihai", "Tudor Daniel", "Andrei" };
 	string var2[] = { "Gigel Mihai", "Tudorache", "Andrei Savu Dan" };
 	string var3[] = { "Gigel Mihai" };
+	string var4[] = { "Gigel Mihai", "Gogu" , "Tudorache", "Andrei Savu Dan" };
 	Bilet p("Vali4", 3, var1);
-	Bilet pp("Vali3 Mailat", 2, var);
+	Bilet pp("Vali3 Mailat", 4, var4);
 	Bilet ppp("Vali2 Eugen Mihai", 3, var2);
 	Bilet pppp("Vali1", 2, var);
 	Bilet ppppp("Valentin", 1, var3);
@@ -314,104 +315,15 @@ int main() {
 	//ordoneazaBiletId();
 	//map<int, Bilet> v = citireBilete();
 
-	//afiseazaBilete();
-/*
-	//ofstream g;
-	//g.open("student.txt"); //nocreate, noreplace(MODE)
-	//g << a;
-	//g.close();
-
-	//remove("student.txt");
-	//afiseazaCinemauri();
-	//affArrId();
-
-	//ofstream g;
-	//string l, h, k;
-	//l = "student";
-	//int b = 100;
-	//k = to_string(b);
-	//h = ".txt";
-	//cout << l + k + h << endl;
-	//g.open(l+k+h); //nocreate, noreplace(MODE)
-	////g << a;
-	//g.close();
-	//string file = l  + h;
-	//remove(file.c_str());
-	//creazaFisierLocuri(5);
-	//introduToateFilmeleInCinema();
-
-	//int* z = arrIdC();
-	//for (int i = 0; i < nrCinemauri(); i++) {
-	//	creazaFisierLocuri(z[i]);
-	//}
-
-	//stergeFilmDinCinema(1, 4);
-
-	//int* h = returnFilmeDinCinema(5);
-	//for (int i = 0; i < returnNrFilmeDinCinema(5); i++) {
-	//	cout << h[i] << endl;
-	//}
-
-	//introduToateFilmeleInCinemaul(5);
-
-	//int z = returnNrFilmeDinCinema(5);
-	//cout << z << endl;
-	//afiseazaToateFilmeleDinCinema();
-
-	//affArrIdC();
-	//stergeBazaDateFilme1();
-	//afiseazaFilme();
-	//introduFilm();
-	//afiseazaFilme();
-	//afiseazaFilmInCinema(1);
-	//afiseazaFilmInCinema(2);
-	//introduFilmInCinema(20, 1);
-	//introduFilmInCinema(20, 1);
-	//afiseazaFilmInCinema(20);
-	//creazaFisierLocuri(1);
-	//introduCinema();
-	//introduCinema();
-	//introduCinema();
-	//afiseazaCinemauri();
-	//introduCinema();
-	//introduToateFilmeleInCinemaul(1);
-	//stergeCinema();
-	//introduToateFilmeleInCinema();
-	//afiseazaFilmInCinema(1);
-	//afiseazaCinemauri();
-	//afiseazaFilmInCinema(1);
-	//stergeToateFilmeleDinCinema(1);
-	//afiseazaFilmInCinema(1);
-	//afiseazaFilmInCinema(2);
-//	stergeFilmDinCinema(1, 5);
-	//stergeFilmDinCinema(2, 5);
-//	stergeFilm();
-	//afiseazaToateFilmeleDinCinema();
-	*/
-	//afiseazaBiletCuId();
-	//inlocuieBiletCuId();
-	//afiseazaBilete();
-	//cout << v << endl;
-	
-	//stergeBilet();
-	//afiseazaFilme();
-	//schimbaAtributFilm();
-	//introduCinema();
-	//stergeCinema();
-	//inlocuieCinemaCuId();
-	//introduFilm();
-	//afiseazaCinemauri();
-	//introduBilet();
-	//stergeBazaDateBilete();
-	//afiseazaBilete();
-	//afiseazaBilete();
-
-	//afiseazaFilmInCinema(2);
-
 	//scadeLocuriLibere(2, 3, 1);
 	//introduBilet();
 	//afiseazaFilmInCinema(2);
 
+	Bilet l;
+	l = pp++;
+	cout << l << endl;
+
+	cout << !pp << endl;;
 /*
 	char* nume1 = nullptr;
 	int nr1 = 0;

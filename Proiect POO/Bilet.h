@@ -183,329 +183,365 @@ public:
 	Film getFilm() {
 		return film;
 	}
-	/*
-	void serialize() {
 
-		//cinema.serializeBilet("Bilet.bin");
-
-		//film.serialize1Bilet("Bilet.bin");
-		int cinema_id = cinema.getCinemaId();
-		int cinema_id_id = cinema.getId();
-		char* cinema_nume = new char[strlen(cinema.getNume() + 1)];
-		strcpy_s(cinema_nume, strlen(cinema.getNume()) + 1, cinema.getNume());
-		string cinema_oras = cinema.getOras();
-		string cinema_adresa = cinema.getAdresa();
-		int cinema_nrZile = cinema.getNrZile();
-		string* zi = new string[cinema_nrZile];
-		zi = cinema.getZi();
-		//strcpy_s(cinema_nume, strlen(cinema.getNume()) + 1, cinema.getNume());
+	void serialize1() {
+		cinema.serializeBilet("Bilet.bin");
+		film.serialize1Bilet("Bilet.bin");
 		ofstream f("Bilet.bin", ios::app | ios::binary);
 		if (f.is_open()) {
-			f.write((char*)&cinema_id, sizeof(cinema_id));
-			f.write((char*)&cinema_id_id, sizeof(cinema_id_id));
-			int len = 101;
-			f.write((char*)&len, sizeof(len));
-			f.write(cinema_nume, len);
-			//delete[] cinema_nume;
-			f.write((char*)&len, sizeof(len));
-			f.write(cinema_oras.c_str(), len);
-			f.write((char*)&len, sizeof(len));
-			f.write(cinema_adresa.c_str(), len);
-			f.write((char*)&cinema_nrZile, sizeof(cinema_nrZile));
-			for (int i = 0; i < 7; i++) {
-				//if (zi[i].length() != 0 && zi[i].length() < 9) {
-				if (zi != nullptr) {
-					if (zi[i].length() > 0 && zi[i].length() < 20) {
-						f.write((char*)&len, sizeof(len));
-						f.write(zi[i].c_str(), len);
-					}
-					//}
-					else {
-						f.write((char*)&len, sizeof(len));
-						f.write("", len);
-					}
-				}
-			}
-			delete[] zi;
-			int y = f.tellp();
-			cout << y << endl;
-
-			int film_filmId = film.getFilmId();
-			int film_id = film.getId();
-			char* film_nume = new char[strlen(film.getNume() + 1)];
-			strcpy_s(film_nume, strlen(film.getNume()) + 1, film.getNume());
-			float film_durata = film.getDurata();
-			int film_nrZile = film.getNrZile();
-			string* zi1 = new string[film_nrZile];
-			zi1 = film.getZi();
-			float film_start = film.getStart();
-			strcpy_s(film_nume, strlen(film.getNume()) + 1, film.getNume());
-			//delete[] film_nume;
-			f.write((char*)&film_filmId, sizeof(film_filmId));
-			f.write((char*)&film_id, sizeof(film_id));
-			len = 101;
-			f.write((char*)&len, sizeof(len));
-			f.write(film_nume, len);
-			f.write((char*)&film_durata, sizeof(film_durata));
-			f.write((char*)&film_nrZile, sizeof(film_nrZile));
-			int len1 = 101;
-			for (int i = 0; i < 7; i++) {
-				if (zi1[i].length() != 0 && zi1[i].length() < 9) {
-					f.write((char*)&len1, sizeof(len1));
-					f.write(zi1[i].c_str(), len1);
-				}
-				else {
-					f.write((char*)&len1, sizeof(len1));
-					f.write("", len1);
-				}
-			}
-			delete[] zi1;
-			f.write((char*)&film_start, sizeof(film_start));
-
-			y = f.tellp();
-			cout << y << endl;
 			f.write((char*)&id, sizeof(id));
-			len = 101;
+			int len = 101;
 			f.write((char*)&len, sizeof(len));
 			f.write(nume, len);
 			f.write((char*)&nrPersoane, sizeof(nrPersoane));
-			len1 = 101;
-			for (int i = 0; i < 5; i++) {
-				if (persoane[i].length() != 0 && persoane[i].length() < 20) {
-					f.write((char*)&len1, sizeof(len1));
-					f.write(persoane[i].c_str(), len1);
+			int len1 = 101;
+			int siguranta = 0;
+			for (int i = 0; i < 4; i++) {
+				if (persoane != nullptr) {
+					if (persoane[i].length() != 0 && persoane[i].length() < 20 && siguranta == 0) {
+						f.write((char*)&len1, sizeof(len1));
+						f.write(persoane[i].c_str(), len1);
+					}
+					else {
+						f.write((char*)&len1, sizeof(len1));
+						f.write("", len1);
+						siguranta = 1;
+					}
 				}
 				else {
 					f.write((char*)&len1, sizeof(len1));
 					f.write("", len1);
 				}
 			}
-			y = f.tellp();
-			cout << y << endl;
 			f.close();
 		}
-	}*/
+	}
 
-void serialize1() {
-	cinema.serializeBilet("Bilet.bin");
-	film.serialize1Bilet("Bilet.bin");
-	ofstream f("Bilet.bin", ios::app | ios::binary);
-	if (f.is_open()) {
-		//int y = f.tellp();
-		//cout << y << endl;
-		f.write((char*)&id, sizeof(id));
-		int len = 101;
-		f.write((char*)&len, sizeof(len));
-		f.write(nume, len);
-		f.write((char*)&nrPersoane, sizeof(nrPersoane));
-		int len1 = 101;
-		int siguranta = 0;
-		for (int i = 0; i < 4; i++) {
-			if (persoane != nullptr) {
+	void serialize1LaLoc(int x) { // serializeaza la o anumita locatie
+		cinema.serializeBiletLaLoc("Bilet.bin", x);
+		film.serialize1BiletLaLoc("Bilet.bin", (x + 1062));
+		fstream f("Bilet.bin", ios::out | ios::in | ios::binary);
+		if (f.is_open()) {
+			f.seekp((x + 1922));
+			f.write((char*)&id, sizeof(id));
+			int len = 101;
+			f.write((char*)&len, sizeof(len));
+			f.write(nume, len);
+			f.write((char*)&nrPersoane, sizeof(nrPersoane));
+			int len1 = 101;
+			int siguranta = 0;
+			for (int i = 0; i < 4; i++) {
+				if (persoane != nullptr) {
 
-				if (persoane[i].length() != 0 && persoane[i].length() < 20 && siguranta == 0) {
-					f.write((char*)&len1, sizeof(len1));
-					f.write(persoane[i].c_str(), len1);
+					if (persoane[i].length() != 0 && persoane[i].length() < 20 && siguranta == 0) {
+						f.write((char*)&len1, sizeof(len1));
+						f.write(persoane[i].c_str(), len1);
+					}
+					else {
+						f.write((char*)&len1, sizeof(len1));
+						f.write("", len1);
+						siguranta = 1;
+					}
 				}
 				else {
 					f.write((char*)&len1, sizeof(len1));
 					f.write("", len1);
-					siguranta = 1;
+				}
+			}
+			f.close();
+		}
+	}
+
+	void deserialize(int x) {
+		fstream f("Bilet.bin", ios::in | ios::out | ios::binary);
+		int cinema_id = 0;
+		int cinema_id_id = 0;
+		char* cinema_nume = nullptr;
+		string cinema_oras = "";
+		string cinema_adresa = "";
+		int cinema_nrZile = 0;
+		if (f.is_open()) {
+			f.seekg(x);
+			f.read((char*)&cinema_id, sizeof(cinema_id));
+			f.read((char*)&cinema_id_id, sizeof(cinema_id_id));
+			int len = 0;
+			f.read((char*)&len, sizeof(len));
+			char* aux = new char[len];
+			f.read(aux, len);
+			cinema_nume = aux;
+			f.read((char*)&len, sizeof(len));
+			char* aux1 = new char[len];
+			f.read(aux1, len);
+			cinema_oras = aux1;
+			delete[] aux1;
+			f.read((char*)&len, sizeof(len));
+			char* aux2 = new char[len];
+			f.read(aux2, len);
+			cinema_adresa = aux2;
+			delete[] aux2;
+			f.read((char*)&cinema_nrZile, sizeof(cinema_nrZile));
+			string* zi = new string[cinema_nrZile];
+			for (int i = 0; i < cinema_nrZile; i++) {
+				int len1 = 0;
+				f.read((char*)&len1, sizeof(len1));
+				char* aux1 = new char[len1];
+				f.read(aux1, len1);
+				zi[i] = aux1;
+			}
+			for (int i = cinema_nrZile; i < 7; i++) {
+				int len1 = 0;
+				f.read((char*)&len1, sizeof(len1));
+				char* aux1 = new char[len1];
+				f.read(aux1, len1);
+			}
+			if (cinema_id_id > 0) {
+				Cinema placeholder(cinema_id_id, cinema_nume, cinema_oras, cinema_adresa, cinema_nrZile, zi, cinema_id);
+				if (placeholder.getCinemaId() > 0) {
+					setCinema(placeholder);
+				}
+			}
+			delete[] zi;
+
+			int film_filmId = 0;
+			int film_id = 0;
+			char* film_nume = nullptr;
+			float film_durata = 0;
+			int film_nrZile = 0;
+			float film_start = 0;
+			f.read((char*)&film_filmId, sizeof(film_filmId));
+			f.read((char*)&film_id, sizeof(film_id));
+			len = 0;
+			f.read((char*)&len, sizeof(len));
+			char* aux5 = new char[len];
+			f.read(aux5, len);
+			film_nume = aux5;
+			f.read((char*)&film_durata, sizeof(film_durata));
+			f.read((char*)&film_nrZile, sizeof(film_nrZile));
+			string* zi1 = new string[film_nrZile];
+			for (int i = 0; i < film_nrZile; i++) {
+				int len1 = 0;
+				f.read((char*)&len1, sizeof(len1));
+				char* aux1 = new char[len1];
+				f.read(aux1, len1);
+				zi1[i] = aux1;
+				delete[] aux1;
+			}
+			for (int i = film_nrZile; i < 7; i++) {
+				int len1 = 0;
+				f.read((char*)&len1, sizeof(len1));
+				char* aux1 = new char[len1];
+				f.read(aux1, len1);
+				delete[] aux1;
+			}
+			f.read((char*)&film_start, sizeof(film_start));
+			if (film_id > 0) {
+				Film placeHolder1(film_id, film_nume, film_durata, film_nrZile, zi1, film_start, film_filmId);
+				if (placeHolder1.getFilmId() > 0) {
+					setFilm(placeHolder1);
+				}
+			}
+			delete[] zi1;
+			int y = f.tellg();
+			cout << "Locatie id: " << y << endl;
+
+			f.read((char*)&id, sizeof(id));
+			len = 0;
+			f.read((char*)&len, sizeof(len));
+			char* aux3 = new char[len];
+			f.read(aux3, len);
+			nume = aux3;
+			f.read((char*)&nrPersoane, sizeof(nrPersoane));
+			delete[] persoane;
+			persoane = new string[nrPersoane];
+			for (int i = 0; i < nrPersoane; i++) {
+				int len1 = 0;
+				f.read((char*)&len1, sizeof(len1));
+				char* aux1 = new char[len1];
+				f.read(aux1, len1);
+				persoane[i] = aux1;
+				delete[] aux1;
+			}
+			for (int i = nrPersoane; i < 4; i++) {
+				int len1 = 0;
+				f.read((char*)&len1, sizeof(len1));
+				char* aux1 = new char[len1];
+				f.read(aux1, len1);
+				delete[] aux1;
+			}
+			f.close();
+		}
+		else {
+			cout << "Eroare la deschiderea fisierului." << endl;
+		}
+	}
+
+	string& operator[](int x) { //operator []
+		if (x >= 0 && x < nrPersoane) {
+			return persoane[x];
+		}
+		else {
+			cout << "Insotitorul introdus nu exista." << endl;
+		}
+	}
+
+	Bilet operator+(int x) {//operator + la stanga
+		Bilet b = *this;
+		if (x > 0) {
+			if (x + b.getNrPersoane() > 4) {
+				int alegere = 0;
+				int h = 4 - b.getNrPersoane();
+				cout << "Nu se pot introduce " << x << " insotitori.\nSe pot adauga " << h << " insotitori.\nDoresti sa adaugi cel putin 1 insotitor?\nAlegere:\n\t1)\n\t*)" << endl;
+				cin >> alegere;
+				if (alegere == 1) {
+					int nr = 0;
+					cout << "Introdu nr de insotitori doriti: " << endl;
+					cin >> nr;
+					string* m = new string[b.getNrPersoane() + nr];
+					if (nr >= 0 && nr <= h) {
+						for (int i = 0; i < b.getNrPersoane(); i++) {
+							m[i] = b.getPersoane()[i];
+						}
+						cin.ignore(1);
+						for (int i = b.getNrPersoane(); i < b.getNrPersoane() + nr; i++) {
+							cout << "Nume: ";
+							getline(cin, m[i]);
+						}
+					}
+					b.setPersoane(m, b.getNrPersoane() + nr);
+					return b;
 				}
 			}
 			else {
-				f.write((char*)&len1, sizeof(len1));
-				f.write("", len1);
-			}
-		}
-		//y = f.tellp();
-		//cout << y << endl;
-		f.close();
-	}
-}
-
-void serialize1LaLoc(int x) { // serializeaza la o anumita locatie
-	cinema.serializeBiletLaLoc("Bilet.bin", x);
-	film.serialize1BiletLaLoc("Bilet.bin", (x + 1062));
-	fstream f("Bilet.bin", ios::out | ios::in | ios::binary);
-	if (f.is_open()) {
-		//int y = f.tellp();
-		//cout << y << endl;
-		f.seekp((x + 1922));
-		f.write((char*)&id, sizeof(id));
-		int len = 101;
-		f.write((char*)&len, sizeof(len));
-		f.write(nume, len);
-		f.write((char*)&nrPersoane, sizeof(nrPersoane));
-		int len1 = 101;
-		int siguranta = 0;
-		for (int i = 0; i < 4; i++) {
-			if (persoane != nullptr) {
-
-				if (persoane[i].length() != 0 && persoane[i].length() < 20 && siguranta == 0) {
-					f.write((char*)&len1, sizeof(len1));
-					f.write(persoane[i].c_str(), len1);
+				string* m = new string[b.getNrPersoane() + x];
+					for (int i = 0; i < b.getNrPersoane(); i++) {
+						m[i] = b.getPersoane()[i];
+					}
+					for (int i = b.getNrPersoane(); i < b.getNrPersoane() + x; i++) {
+						cout << "Nume: ";
+						getline(cin, m[i]);
+					}
+					b.setPersoane(m, b.getNrPersoane() + x);
+					return b;
 				}
-				else {
-					f.write((char*)&len1, sizeof(len1));
-					f.write("", len1);
-					siguranta = 1;
-				}
-			}
-			else {
-				f.write((char*)&len1, sizeof(len1));
-				f.write("", len1);
-			}
 		}
-		//y = f.tellp();
-		//cout << y << endl;
-		f.close();
+		else {
+			return b;
+		}
 	}
-}
 
-void deserialize(int x) {
-	fstream f("Bilet.bin", ios::in | ios::out | ios::binary);
-	int cinema_id = 0;
-	int cinema_id_id = 0;
-	char* cinema_nume = nullptr;
-	string cinema_oras = "";
-	string cinema_adresa = "";
-	int cinema_nrZile = 0;
-	if (f.is_open()) {
-		//int y = f.tellg();
-		//cout << y << endl;
-		f.seekg(x);
-		f.read((char*)&cinema_id, sizeof(cinema_id));
-		f.read((char*)&cinema_id_id, sizeof(cinema_id_id));
-		int len = 0;
-		f.read((char*)&len, sizeof(len));
-		char* aux = new char[len];
-		f.read(aux, len);
-		cinema_nume = aux;
-		//delete[] aux;
-		f.read((char*)&len, sizeof(len));
-		char* aux1 = new char[len];
-		f.read(aux1, len);
-		cinema_oras = aux1;
-		delete[] aux1;
-		f.read((char*)&len, sizeof(len));
-		char* aux2 = new char[len];
-		f.read(aux2, len);
-		cinema_adresa = aux2;
-		delete[] aux2;
-		f.read((char*)&cinema_nrZile, sizeof(cinema_nrZile));
-		string* zi = new string[cinema_nrZile];
-		for (int i = 0; i < cinema_nrZile; i++) {
-			int len1 = 0;
-			f.read((char*)&len1, sizeof(len1));
-			char* aux1 = new char[len1];
-			f.read(aux1, len1);
-			zi[i] = aux1;
-		}
-		for (int i = cinema_nrZile; i < 7; i++) {
-			int len1 = 0;
-			f.read((char*)&len1, sizeof(len1));
-			char* aux1 = new char[len1];
-			f.read(aux1, len1);
-		}
-		if (cinema_id_id > 0) {
-			Cinema placeholder(cinema_id_id, cinema_nume, cinema_oras, cinema_adresa, cinema_nrZile, zi, cinema_id);
-			if (placeholder.getCinemaId() > 0) {
-				setCinema(placeholder);
+	Bilet operator++() {//preincrementare
+		if (nrPersoane < 4) {
+			string* m = new string[nrPersoane + 1];
+			for (int i = 0; i < nrPersoane; i++) {
+				m[i] = persoane[i];
 			}
-		}
-		delete[] zi;
-		//y = f.tellg();
-		//cout << y << endl;
-
-		int film_filmId = 0;
-		int film_id = 0;
-		char* film_nume = nullptr;
-		//strcpy_s(film_nume, strlen(film.getNume()) + 1, film.getNume());
-		float film_durata = 0;
-		int film_nrZile = 0;
-		//zi1 = film.getZi();
-		float film_start = 0;
-		f.read((char*)&film_filmId, sizeof(film_filmId));
-		f.read((char*)&film_id, sizeof(film_id));
-		len = 0;
-		f.read((char*)&len, sizeof(len));
-		char* aux5 = new char[len];
-		f.read(aux5, len);
-		film_nume = aux5;
-		//delete[] aux5;
-		f.read((char*)&film_durata, sizeof(film_durata));
-		f.read((char*)&film_nrZile, sizeof(film_nrZile));
-		//delete[] zi;
-		string* zi1 = new string[film_nrZile];
-		for (int i = 0; i < film_nrZile; i++) {
-			int len1 = 0;
-			f.read((char*)&len1, sizeof(len1));
-			char* aux1 = new char[len1];
-			f.read(aux1, len1);
-			zi1[i] = aux1;
-			delete[] aux1;
-		}
-		for (int i = film_nrZile; i < 7; i++) {
-			int len1 = 0;
-			f.read((char*)&len1, sizeof(len1));
-			char* aux1 = new char[len1];
-			f.read(aux1, len1);
-			delete[] aux1;
-		}
-		f.read((char*)&film_start, sizeof(film_start));
-		//f.tellg();
-		//cout << y << endl;
-		if (film_id > 0) {
-			Film placeHolder1(film_id, film_nume, film_durata, film_nrZile, zi1, film_start, film_filmId);
-			if (placeHolder1.getFilmId() > 0) {
-				setFilm(placeHolder1);
+			//cin.ignore(1);
+			for (int i = nrPersoane; i < nrPersoane + 1; i++) {
+				cout << "Nume: ";
+				getline(cin, m[i]);
 			}
+			setPersoane(m, nrPersoane + 1);
+			return *this;
 		}
-		delete[] zi1;
-		int y = f.tellg();
-		cout << "Locatie id: " << y << endl;
-
-		f.read((char*)&id, sizeof(id));
-		len = 0;
-		f.read((char*)&len, sizeof(len));
-		char* aux3 = new char[len];
-		f.read(aux3, len);
-		nume = aux3;
-		//delete[] aux3;
-		f.read((char*)&nrPersoane, sizeof(nrPersoane));
-		delete[] persoane;
-		persoane = new string[nrPersoane];
-		for (int i = 0; i < nrPersoane; i++) {
-			int len1 = 0;
-			f.read((char*)&len1, sizeof(len1));
-			char* aux1 = new char[len1];
-			f.read(aux1, len1);
-			persoane[i] = aux1;
-			delete[] aux1;
+		else {
+			cout << "Nr de persoane este deja maxim" << endl;
+			return *this;
 		}
-		for (int i = nrPersoane; i < 4; i++) {
-			int len1 = 0;
-			f.read((char*)&len1, sizeof(len1));
-			char* aux1 = new char[len1];
-			f.read(aux1, len1);
-			delete[] aux1;
-		}
-		//y = f.tellg();
-		//cout << y << endl;
-
-		f.close();
 	}
-	else {
-		cout << "Eroare la deschiderea fisierului." << endl;
+
+	Bilet operator++(int x) {//postincrementare
+		Bilet b = *this;
+		if (nrPersoane < 4) {
+			string* m = new string[b.nrPersoane + 1];
+			for (int i = 0; i < b.nrPersoane; i++) {
+				m[i] = b.persoane[i];
+			}
+			//cin.ignore(1);
+			for (int i = b.nrPersoane; i < b.nrPersoane + 1; i++) {
+				cout << "Nume: ";
+				getline(cin, m[i]);
+			}
+			setPersoane(m, b.nrPersoane + 1);
+			return b;
+		}
+		else {
+			cout << "Nr de persoane este deja maxim" << endl;
+			return b;
+		}
 	}
-}
+
+	explicit operator int() {//cast explicit
+		return id;
+	}
+
+	bool operator!() { //operator !
+		return nrPersoane > 0;
+	}
 
 	friend ostream& operator<<(ostream&, Bilet);
 	friend istream& operator>>(istream&, Bilet&);
+	friend Bilet operator+(int, Bilet);
+	friend bool operator<(const Bilet& x, const Bilet& y) {
+		return x.id < y.id;
+	}
+	friend bool operator==(const Bilet& x, const Bilet& y) //operator==
+	{
+		if (x.nrPersoane == y.nrPersoane) {
+			cout << "Numar de persoane egale." << endl;
+			return true;
+		}
+		else {
+			cout << "Numar de persoane inegale." << endl;
+			return false;
+		}
+	}
 };
 
 int Bilet::nrBilete = 0;
+
+Bilet operator+(int x, Bilet b) {
+	if (x > 0) {
+		if (x + b.getNrPersoane() > 4) {
+			int alegere = 0;
+			int h = 4 - b.getNrPersoane();
+			cout << "Nu se pot introduce " << x << " insotitori.\nSe pot adauga " << h << " insotitori.\nDoresti sa adaugi cel putin 1 insotitor?\nAlegere:\n\t1)\n\t*)" << endl;
+			cin >> alegere;
+			if (alegere == 1) {
+				int nr = 0;
+				cout << "Introdu nr de insotitori doriti: " << endl;
+				cin >> nr;
+				string* m = new string[b.getNrPersoane() + nr];
+				if (nr >= 0 && nr <= h) {
+					for (int i = 0; i < b.getNrPersoane(); i++) {
+						m[i] = b.getPersoane()[i];
+					}
+					cin.ignore(1);
+					for (int i = b.getNrPersoane(); i < b.getNrPersoane() + nr; i++) {
+						cout << "Nume: ";
+						getline(cin, m[i]);
+					}
+				}
+				b.setPersoane(m, b.getNrPersoane() + nr);
+				return b;
+			}
+		}
+		else {
+			string* m = new string[b.getNrPersoane() + x];
+			for (int i = 0; i < b.getNrPersoane(); i++) {
+				m[i] = b.getPersoane()[i];
+			}
+			for (int i = b.getNrPersoane(); i < b.getNrPersoane() + x; i++) {
+				cout << "Nume: ";
+				getline(cin, m[i]);
+			}
+			b.setPersoane(m, b.getNrPersoane() + x);
+			return b;
+		}
+	}
+	else {
+		return b;
+	}
+}
 
 map<int, Film>retFilme() {
 	map<int, Film>Map1 = returnFilme();
@@ -818,8 +854,6 @@ void inlocuieBiletCuId() {
 		cout << "Bilet modificat cu succes" << endl;
 	}
 }
-
-////////////Sterge Bilet ///////////
 
 void stergeBilet() {
 	afiseazaBilete();

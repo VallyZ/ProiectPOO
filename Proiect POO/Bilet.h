@@ -133,9 +133,16 @@ public:
 		return nume;
 	}
 	void setNume(const char* x) {
-		if (strlen(x) > 0) {
-			strcpy_s(nume, strlen(x) + 1, x);
+		if (x != nullptr) {
+			if (nume != nullptr) {
+				delete[] nume;
+			}
+			if (strlen(x) > 0) {
+				nume = new char[strlen(x) + 1];
+				strcpy_s(nume, strlen(x) + 1, x);
+			}
 		}
+
 		else {
 			nume = nullptr;
 		}

@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <map>
 #include <vector>
+#include "Incasare.h"
 using namespace std;
 
 class Bilet {
@@ -30,7 +31,7 @@ public:
 			strcpy_s(this->nume, strlen(nume) + 1, nume);
 		}
 		else {
-			nume = nullptr;
+			this->nume = nullptr;
 		}
 		if (persoane != nullptr && nrPersoane > 0) {
 			this->nrPersoane = nrPersoane;
@@ -127,7 +128,9 @@ public:
 		return id;
 	}
 	void forteazaId(int x) {
-		const_cast<int&>(id) = x;
+		if (x > 0) {
+			const_cast<int&>(id) = x;
+		}
 	}
 	char* getNume() {
 		return nume;
@@ -142,7 +145,6 @@ public:
 				strcpy_s(nume, strlen(x) + 1, x);
 			}
 		}
-
 		else {
 			nume = nullptr;
 		}
@@ -348,8 +350,8 @@ public:
 				}
 			}
 			delete[] zi1;
-			int y = f.tellg();
-			cout << "Locatie id: " << y << endl;
+			//int y = f.tellg();
+			//cout << "Locatie id: " << y << endl;
 
 			f.read((char*)&id, sizeof(id));
 			len = 0;
@@ -879,7 +881,7 @@ void stergeBilet() {
 		int sigur = 0;
 		map<int, Bilet>B = returnBilete();
 		for (int i = 0; i < B.size(); i++) {
-			cout << B[i] << endl;
+			//cout << B[i] << endl;
 		}
 		cout << "Esti sigur ca vrei sa stergi biletul cu Id : " << x1 << " ?" << endl;
 		cout << "\t1)Da\n\t*)Nu\nAlegere: " << endl;
@@ -887,6 +889,7 @@ void stergeBilet() {
 		if (sigur == 1) {
 			for (int i = 0; i < B.size(); i++) {
 				if (B[i].getId() == x1) {
+					scadeLocuriLibere(B[i].getCinema().getId(),B[i].getFilm().getId(),-(B[i].getNrPersoane()+1));
 					B.erase(i);
 					break;
 				}
@@ -913,6 +916,15 @@ void introduBilet() {
 	if (b.getNume()!=nullptr) {
 		b.serialize1();
 		ordoneazaBiletId();
+		//void introduSiSerializeazaBilet(Bilet);
+		//introduSiSerializeazaBilet(b);
+		int* x = new int[b.getNrPersoane() + 1];
+		for (int j = 0; j < b.getNrPersoane() + 1; j++) {
+			x[j] = 100;
+		}
+		Incasare i(nrBilete(), b.getNume(), b.getNrPersoane() + 1, x);
+		//cout << i << endl;
+		i.serialize();
 	}
 	else {
 		cout << "Biletul nu a fost introdus." << endl;

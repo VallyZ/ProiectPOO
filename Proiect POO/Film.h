@@ -268,14 +268,16 @@ public:
 		}
 	}
 	void forteazaId(int x) {
-		const_cast<int&>(filmId) = x;
+		if (x > 0) {
+			const_cast<int&>(filmId) = x;
+		}
 	}
 
 	void serialize1() { // Scrie in fisier binar un obiect.
 		ofstream f("Film1.bin", ios::app | ios::binary);
 		if (f.is_open()) {
-			int y = f.tellp();
-			cout << y << endl;
+			//int y = f.tellp();
+			//cout << y << endl;
 			f.write((char*)&filmId, sizeof(filmId));
 			f.write((char*)&id, sizeof(id));
 			int len = 101;
@@ -284,19 +286,23 @@ public:
 			f.write((char*)&durata, sizeof(durata));
 			f.write((char*)&nrZile, sizeof(nrZile));
 			int len1 = 101;
+			int siguranta = 0;
 			for (int i = 0; i < 7; i++) {
-				if (zi[i].length() != 0 && zi[i].length() < 9) {
-					f.write((char*)&len1, sizeof(len1));
-					f.write(zi[i].c_str(), len1);
-				}
-				else {
-					f.write((char*)&len1, sizeof(len1));
-					f.write("", len1);
+				if (zi != nullptr) {
+					if (zi[i].length() != 0 && zi[i].length() < 9 && siguranta == 0) {
+						f.write((char*)&len1, sizeof(len1));
+						f.write(zi[i].c_str(), len1);
+					}
+					else {
+						f.write((char*)&len1, sizeof(len1));
+						f.write("", len1);
+						siguranta = 1;
+					}
 				}
 			}
 			f.write((char*)&start, sizeof(start));
-			y = f.tellp();
-			cout << y << endl;
+			//y = f.tellp();
+			//cout << y << endl;
 			f.close();
 		}
 		else {
@@ -306,8 +312,8 @@ public:
 	void serialize1Bilet(string z) { // pentru a serializa in Bilet
 		ofstream f(z, ios::app | ios::binary);
 		if (f.is_open()) {
-			int y = f.tellp();
-			cout << y << endl;
+			//int y = f.tellp();
+			//cout << y << endl;
 			f.write((char*)&filmId, sizeof(filmId));
 			f.write((char*)&id, sizeof(id));
 			int len = 101;
@@ -341,8 +347,8 @@ public:
 	void serialize1BiletLaLoc(string z, int x) { // pentru a serializa in Bilet
 		fstream f(z, ios::out | ios::in | ios::binary);
 		if (f.is_open()) {
-			int y = f.tellp();
-			cout << y << endl;
+			//int y = f.tellp();
+			//cout << y << endl;
 			f.seekp(x);
 			f.write((char*)&filmId, sizeof(filmId));
 			f.write((char*)&id, sizeof(id));
@@ -412,8 +418,8 @@ public:
 		fstream f("Film1.bin", ios::out | ios::in | ios::binary);
 		if (f.is_open()) {
 			f.seekg(x);
-			int y = f.tellg();
-			cout << y << endl;
+			//int y = f.tellg();
+			//cout << y << endl;
 			f.read((char*)&filmId, sizeof(filmId));
 			f.read((char*)&id, sizeof(id));
 			int len = 0;
@@ -443,8 +449,8 @@ public:
 			}
 			f.read((char*)&start, sizeof(start));
 			//delete[] aux;
-			y = f.tellg();
-			cout << y << endl;
+			//y = f.tellg();
+			//cout << y << endl;
 			f.close();
 		}
 		else {
@@ -1127,17 +1133,6 @@ void schimbaAtributFilm() { //modifica atributul unui film
 	cin >> atr;
 	switch (atr) {
 	case 1:
-		//cout << "Introdu noul Id: " << endl;
-		//cin >> x2;
-		//if (x2 > 0) {
-		//	o.setId(x2);
-		//	o.serialize1(x1);
-		//	break;
-		//}
-		//else {
-		//	cout << "Id-ul nu poate fi < 0." << endl;
-		//	break;
-		//}
 		cout << "Introdu noul Nume: " << endl;
 		char buffer[101];
 		cin.ignore(1);

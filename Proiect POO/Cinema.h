@@ -242,7 +242,9 @@ public:
 		}
 	}
 	void forteazaId(int x) {
-		const_cast<int&>(cinemaId) = x;
+		if (x > 0) {
+			const_cast<int&>(cinemaId) = x;
+		}
 	}
 
 	void serialize() {
@@ -281,8 +283,8 @@ public:
 	void serializeBilet(string x) { //  pentru a serializa in Bilet.bin
 		ofstream f(x, ios::app | ios::binary);
 		if (f.is_open()) {
-			int y = f.tellp();
-			cout << y << endl;
+			//int y = f.tellp();
+			//cout << y << endl;
 			f.write((char*)&cinemaId, sizeof(cinemaId));
 			f.write((char*)&id, sizeof(id));
 			int len = 101;
@@ -316,8 +318,8 @@ public:
 	void serializeBiletLaLoc(string x, int z) { //  pentru a serializa in Bilet.bin la o anumita locatie
 		fstream f(x, ios::out | ios::in | ios::binary);
 		if (f.is_open()) {
-			int y = f.tellp();
-			cout << y << endl;
+			//int y = f.tellp();
+			//cout << y << endl;
 			f.seekp(z);
 			f.write((char*)&cinemaId, sizeof(cinemaId));
 			f.write((char*)&id, sizeof(id));

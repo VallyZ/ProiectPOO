@@ -174,7 +174,6 @@ public:
 				strcpy_s(nume, strlen(x) + 1, x);
 			}
 		}
-
 		else {
 			nume = nullptr;
 		}
@@ -222,7 +221,9 @@ public:
 		}
 	}
 	void forteazaId(int x) {
-		const_cast<int&>(consumabilId) = x;
+		if (x > 0) {
+			const_cast<int&>(consumabilId) = x;
+		}
 	} 
 
 	void serialize() {

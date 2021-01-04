@@ -879,7 +879,7 @@ void stergeBilet() {
 		}
 	}if (gasit == 1) {
 		int sigur = 0;
-		map<int, Bilet>B = returnBilete();
+		map<int, Bilet> B = returnBilete();
 		for (int i = 0; i < B.size(); i++) {
 			//cout << B[i] << endl;
 		}
@@ -887,9 +887,45 @@ void stergeBilet() {
 		cout << "\t1)Da\n\t*)Nu\nAlegere: " << endl;
 		cin >> sigur;
 		if (sigur == 1) {
+			int siguranta = 0;
 			for (int i = 0; i < B.size(); i++) {
 				if (B[i].getId() == x1) {
 					scadeLocuriLibere(B[i].getCinema().getId(),B[i].getFilm().getId(),-(B[i].getNrPersoane()+1));
+					B.erase(i);
+					break;
+				}
+			}
+			void stergeIncasare(int);
+			stergeIncasare(x1);
+			stergeBazaDateBilete();
+			for (map<int, Bilet>::iterator it = B.begin(); it != B.end(); it++) {
+				it->second.serialize1();
+			}
+			ordoneazaBiletId();
+		}
+		else {
+			cout << "Biletul nu a fost sters." << endl;
+		}
+	}
+	else {
+		cout << "Id-ul introdus nu exista." << endl;
+	}
+}
+
+void stergeBilet(int x1) { // sterge bilet cand sterge incasare
+	int gasit = 0;
+	int* id = arrIdBilete();
+	for (int i = 0; i < nrBilete(); i++) {
+		if (x1 == id[i]) {
+			gasit = 1;
+		}
+	}if (gasit == 1) {
+		int sigur = 1;
+		map<int, Bilet> B = returnBilete();
+		if (sigur == 1) {
+			for (int i = 0; i < B.size(); i++) {
+				if (B[i].getId() == x1) {
+					scadeLocuriLibere(B[i].getCinema().getId(), B[i].getFilm().getId(), -(B[i].getNrPersoane() + 1));
 					B.erase(i);
 					break;
 				}
@@ -899,9 +935,6 @@ void stergeBilet() {
 				it->second.serialize1();
 			}
 			ordoneazaBiletId();
-		}
-		else {
-			cout << "Biletul nu a fost sters." << endl;
 		}
 	}
 	else {

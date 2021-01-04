@@ -43,10 +43,18 @@ int main() {
 	//i.serialize();
 
 	Incasare ii;
-	ii.deserialize(137);
+	ii.deserialize(0);
+	ii = ++ii;
 	cout << ii;
-	
-	//introduBilet();
 
+
+	//affArrIdBilete();
+	//afiseazaIncasari();
+	//stergeBilet();
+	////stergeIncasare();
+	//afiseazaBilete();
+	//afiseazaIncasari();
+
+	
 
 }   

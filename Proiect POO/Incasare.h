@@ -17,7 +17,6 @@ private:
 	char* nume; // numele de pe bilet
 	int nr; // 1 + nrInsotitori
 	int* incasare; // vector de 100 * nrInsotitori 
-	//Bilet bilet;
 	static int nrIncasari;
 
 public:
@@ -74,7 +73,6 @@ public:
 	}
 
 	Incasare(const Incasare& i) :id(i.id) {
-		//bilet = i.bilet;
 		idBilet = i.idBilet;
 		if (i.nume != nullptr) {
 			nume = new char[strlen(i.nume) + 1];
@@ -97,8 +95,7 @@ public:
 	}
 
 	Incasare& operator=(const Incasare& i) {
-		const_cast<int&>(this->id) = id;
-		//bilet = i.bilet;
+		const_cast<int&>(this->id) = i.id;
 		idBilet = i.idBilet;
 		if (i.nume != nullptr) {
 			nume = new char[strlen(i.nume) + 1];
@@ -193,18 +190,10 @@ public:
 			return nullptr;
 		}
 	}
-	//void setBilet(Bilet x) {
-	//	bilet = x;
-	//}
-	//Bilet getBilet() {
-	//	return bilet;
-	//}
 
 	void serialize() {
 		ofstream f("Incasare.bin", ios::app | ios::binary);
 		if (f.is_open()) {
-			//int y = f.tellp();
-			//cout << "Incepere fisier: " << y << endl;
 			f.write((char*)&id, sizeof(id));
 			f.write((char*)&idBilet, sizeof(idBilet));
 			int len = 101;
@@ -226,8 +215,6 @@ public:
 					}
 				}
 			}
-			//y = f.tellp();
-			//cout << "Final scris: " << y << endl;
 			f.close();
 		}
 		else {
@@ -238,8 +225,6 @@ public:
 	void serialize(int x) {
 		ofstream f("Incasare.bin", ios::app | ios::binary);
 		if (f.is_open()) {
-			//int y = f.tellp();
-			//cout << "Incepere fisier: " << y << endl;
 			f.seekp(x);
 			f.write((char*)&id, sizeof(id));
 			f.write((char*)&idBilet, sizeof(idBilet));
@@ -262,8 +247,6 @@ public:
 					}
 				}
 			}
-			//y = f.tellp();
-			//cout << "Final scris: " << y << endl;
 			f.close();
 		}
 		else {
@@ -275,8 +258,6 @@ public:
 		fstream f("Incasare.bin", ios::out | ios::in | ios::binary);
 		if (f.is_open()) {
 			f.seekg(x);
-			//int y = f.tellp();
-			//cout << "Incepere fisier: " << y << endl;
 			f.read((char*)&id, sizeof(id));
 			f.read((char*)&idBilet, sizeof(idBilet));
 			int len = 0;
@@ -294,8 +275,6 @@ public:
 			for (int j = nr; j < 5; j++) {
 				f.read((char*)&gol, sizeof(gol));
 			}
-			//y = f.tellp();
-			//cout << "Final citit: " << y << endl;
 			f.close();
 		}
 		else {
@@ -303,11 +282,114 @@ public:
 		}
 	}
 
+	int operator[](int x) {
+		if (x >= 0 && x < nr) {
+			return incasare[x];
+		}
+		else {
+			cout << "Pretul pentru insotitorul introdus nu exista" << endl;
+			return 0;
+		}
+	}
+
+	Incasare operator+(int x) {
+		Incasare I = *this;
+		cout << "Adauga extra pret pentru biletul acesta" << endl;
+		if (x > 0) {
+			int max = I.nr;
+			for (int i = 0; i < max; i++) {
+				I.incasare[i] += x;
+			}
+			return I;
+		}
+		else {
+			cout << "Pretul nu poate fi <0." << endl;
+			return I;
+		}
+	}
+
+	Incasare operator++() {//preincrementare
+		if (nr < 5) {
+			int* m = new int[nr + 1];
+			for (int i = 0; i < nr; i++) {
+				m[i] = incasare[i];
+			}
+			for (int i = nr; i < nr + 1; i++) {
+				m[i] = 100;
+			}
+			setIncasare(m, nr + 1);
+			return *this;
+		}
+		else {
+			cout << "Nr de persoane este deja maxim" << endl;
+			return *this;
+		}
+	}
+
+	Incasare operator++(int x) {//preincrementare
+		Incasare I = *this;
+		if (nr < 5) {
+			int* m = new int[I.nr + 1];
+			for (int i = 0; i < I.nr; i++) {
+				m[i] = I.incasare[i];
+			}
+			for (int i = I.nr; i < I.nr + 1; i++) {
+				m[i] = 100;
+			}
+			setIncasare(m, nr + 1);
+			return I;
+		}
+		else {
+			cout << "Nr de persoane este deja maxim" << endl;
+			return I;
+		}
+	}
+
+	explicit operator int() { // cast explicit
+		return id;
+	}
+
+	bool operator!() { //operator !
+		return nr > 0;
+	}
+
 	friend ostream& operator<<(ostream&, Incasare);
 	friend istream& operator>>(istream&, Incasare&);
+	friend Incasare operator+(int, Incasare);
+	friend bool operator<(const Incasare& x, const Incasare& y) {
+		return x.id < y.id;
+	}
+	friend bool operator==(const Incasare& x, const Incasare& y) //operator==
+	{
+		if (x.nr == y.nr) {
+			cout << "Numar de incasari egale." << endl;
+			return true;
+		}
+		else {
+			cout << "Numar de incasari inegale." << endl;
+			return false;
+		}
+	}
 };
 
 int Incasare::nrIncasari = 0;
+
+Incasare operator+(int x, Incasare s) {
+	cout << "Adauga extra pret pentru biletul acesta" << endl;
+	if (x > 0) {
+		int max = s.getNr();
+		int* z = new int[max];
+		for (int i = 0; i < max; i++) {
+			z[i] = s.getIncasare()[i] + x;
+		}
+		s.setIncasare(z, max);
+		return s;
+	}
+	else {
+		cout << "Pretul nu poate fi <0." << endl;
+		return s;
+	}
+}
 
 ostream& operator<<(ostream& o, Incasare i) { // cout
 	o << endl;
@@ -352,4 +434,250 @@ istream& operator>>(istream& i, Incasare& o) { // cin
 	}
 	o.setIncasare(x, o.nr);
 	return i;
+}
+
+int nrIncasari() {
+	ifstream f("Incasare.bin", ios::binary);
+	if (f.is_open()) {
+		f.seekg(0, ios::end);
+		int x = f.tellg();
+		int y = x / 137;
+		f.close();
+		return y;
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
+		return 0;
+	}
+}
+
+void ordoneazaIncasari() {
+	fstream f("Incasare.bin", ios::in | ios::out | ios::binary);
+	if (f.is_open()) {
+		int incasareId = 1;
+		int max = nrIncasari();
+		for (int i = 0; i < max; i++) {
+			f.seekg(i * 137);
+			f.write((char*)&incasareId, sizeof(incasareId));
+			incasareId++;
+		}
+		f.close();
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
+	}
+}
+
+map<int, Incasare> returnIncasari() {
+	ordoneazaIncasari();
+	map<int, Incasare> I;
+	Incasare i;
+	int ii = 0;
+	int max = nrIncasari();
+	ifstream f("Incasare.bin", ios::binary);
+	if (f.is_open()) {
+		for (int j = 0; j < max; j++) {
+			i.deserialize(j * 137);
+			I[ii] = i;
+			ii++;
+		}
+		f.close();
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
+	}
+	return I;
+}
+
+void stergeBazaDateIncasari() {
+	ofstream f("Incasare.bin", ios::trunc | ios::binary);
+	if (f.is_open()) {
+		f.close();
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
+	}
+}
+
+void afiseazaIncasari() {
+	map<int, Incasare> I = returnIncasari();
+	for(int i = 0; i < I.size(); i++) {
+		cout << I[i] << endl;
+	}
+}
+
+int* arrIdIncasari() {
+	int* arrIdIncasari = new int[nrIncasari()];
+	const int max = nrIncasari();
+	ifstream f("Incasare.bin", ios::binary);
+	if (f.is_open()) {
+		for (int i = 0; i < max; i++) {
+			int x = 0;
+			f.seekg(137 * i);
+			f.read((char*)&x, sizeof(x));
+			f.read((char*)&x, sizeof(x));
+			arrIdIncasari[i] = x;
+		}
+		f.close();
+		return arrIdIncasari;
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
+	}
+}
+
+void affArrIdIncasari() {
+	int* arr = arrIdIncasari();
+	cout << "Exista urmatoarele incasari cu Id: (Bilet id: )" << endl;
+	for (int i = 0; i < nrIncasari(); i++) {
+		cout << arr[i] << " ";
+	}
+	cout << endl;
+}
+
+int locIncasareCuId() { //returneaza locatia unei incasari in fisier
+	ifstream h("Incasare.bin", ios::binary);
+	if (h.is_open()) {
+		int x1 = 0;
+		int locatie = 0;
+		int gasit = 0;
+		affArrIdIncasari();
+		cout << "Introdu id-ul incasarii pe care vrei sa o gasesti: " << endl;
+		cin >> x1;
+		for (int i = 0; i < nrIncasari(); i++) {
+			int id = 0;
+			h.seekg(137 * i);
+			h.read((char*)&id, sizeof(id));
+			h.read((char*)&id, sizeof(id));
+			if (id == x1) {
+				locatie = h.tellg();
+				//locatie -= 4;
+				locatie -= 8;
+				gasit = 1;
+				break;
+			}
+		}h.close();
+		if (gasit != 1) {
+			cout << "Id-ul introdus nu exista." << endl;
+		}
+		else {
+			return locatie;
+		}
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
+	}
+}
+
+void afiseazaIncasareCuId() {
+	int z = locIncasareCuId();
+	Incasare i;
+	i.deserialize(z);
+	cout << i << endl;
+}
+
+void stergeIncasare() {
+	afiseazaIncasari();
+	int x1 = 0;
+	int gasit = 0;
+	affArrIdIncasari();
+	int* id = arrIdIncasari();
+	cout << "Introdu id-ul Incasarii pe care vrei sa o gasesti: (Bilet id: )" << endl;
+	cin >> x1;
+	for (int i = 0; i < nrIncasari(); i++) {
+		if (x1 == id[i]) {
+			gasit = 1;
+		}
+	}
+	if (gasit == 1) {
+		int sigur = 0;
+		map<int, Incasare> I = returnIncasari();
+		for (int i = 0; i < I.size(); i++) {
+
+		}
+		cout << "Esti sigur ca vrei sa stergi Incasarea cu Id: (Bilet id: )" << x1 << "?\nStergerea va rezulta si in stergerea biletului." << endl;
+		cout << "\t1)Da\n\t*)Nu\nAlegere: " << endl;
+		cin >> sigur;
+		if (sigur == 1) {
+			int siguranta = 0;
+			for (int i = 0; i < I.size(); i++) {
+				if (I[i].getIdBilet() == x1 && siguranta == 0) {
+					I.erase(i);
+					//break;
+					//ordoneazaIncasari(i);
+					siguranta = 1;
+					i++;
+					//break;
+				}
+				if (siguranta == 1) {
+					int z = I[i].getIdBilet() - 1;
+					I[i].setIdBilet(z);
+				}
+			}
+			void stergeBilet(int);
+			stergeBilet(x1);
+			stergeBazaDateIncasari();
+			for (map<int, Incasare>::iterator it = I.begin(); it != I.end(); it++) {
+				it->second.serialize();
+			}
+			ordoneazaIncasari();
+		}
+		else {
+			cout << "Incasarea nu a fost stearsa." << endl;
+		}
+	}
+	else {
+		cout << "Id-ul introdus nu exista." << endl;
+	}
+}
+
+void stergeIncasare(int x1) { // sterge incasare cand sterge bilet
+	int gasit = 0;
+	int* id = arrIdIncasari();
+	for (int i = 0; i < nrIncasari(); i++) {
+		if (x1 == id[i]) {
+			gasit = 1;
+		}
+	}
+	if (gasit == 1) {
+		int sigur = 1;
+		map<int, Incasare> I = returnIncasari();
+		if (sigur == 1) {
+			int siguranta = 0;
+			for (int i = 0; i < I.size(); i++) {
+				if (I[i].getIdBilet() == x1 && siguranta == 0) {
+					I.erase(i);
+					//break;
+					//ordoneazaIncasari(i);
+					siguranta = 1;
+					i++;
+					//break;
+				}
+				if (siguranta == 1) {
+					int z = I[i].getIdBilet() - 1;
+					I[i].setIdBilet(z);
+				}
+			}
+			stergeBazaDateIncasari();
+			for (map<int, Incasare>::iterator it = I.begin(); it != I.end(); it++) {
+				it->second.serialize();
+			}
+			ordoneazaIncasari();
+		}
+	}
+	else {
+		cout << "Id-ul introdus nu exista." << endl;
+	}
+}
+
+int returnTotalIncasari() {
+	int total = 0;
+	map<int, Incasare> I = returnIncasari();
+	for (int i = 0; i < I.size(); i++) {
+		int x = I[i].getNr();
+		for (int j = 0; j < x; j++) {
+			total += I[i].getIncasare()[j];
+		}
+	}
+	return total;
 }

@@ -12,18 +12,16 @@ class Film {
 private:
 	const int filmId = 0;
 	int id;
-	//string nume;
 	char* nume;
 	float durata;
 	int nrZile;
 	string* zi;
-	float start;//ora de incepere 12.00;
+	float start;
 	static int numarFilme;
 
 public:
 	Film() : filmId(++numarFilme) {
 		id = 0;
-		//nume = "";
 		nume = nullptr;
 		durata = 0.0;
 		nrZile = 0;
@@ -45,7 +43,6 @@ public:
 		else {
 			this->nume = nullptr;
 		}
-		//this->nume = nume;
 		if (durata > 0) {
 			this->durata = durata;
 		}
@@ -86,7 +83,6 @@ public:
 		else {
 			this->nume = nullptr;
 		}
-		//this->nume = nume;
 		if (durata > 0) {
 			this->durata = durata;
 		}
@@ -121,7 +117,6 @@ public:
 		else {
 			this->nume = nullptr;
 		}
-		//nume = f.nume;
 		durata = f.durata;
 		if (f.nrZile > 0 && f.zi != nullptr) {
 			zi = new string[f.nrZile];
@@ -140,9 +135,6 @@ public:
 	Film& operator=(const Film& f) {
 		const_cast<int&>(filmId) = f.filmId;
 		id = f.id;
-		/*if (nume != nullptr) {
-			delete[] nume;
-		}*/
 		if (f.nume != nullptr) {
 			this->nume = new char[strlen(f.nume) + 1];
 			strcpy_s(this->nume, strlen(f.nume) + 1, f.nume);
@@ -150,7 +142,6 @@ public:
 		else {
 			this->nume = nullptr;
 		}
-		//nume = f.nume;
 		durata = f.durata;
 		if (zi != nullptr) {
 			delete[] zi;
@@ -175,7 +166,6 @@ public:
 			delete[] nume;
 		}
 		if (zi != nullptr) {
-			//cout << this->getNume() << endl;
 			delete[] zi;
 		}
 	}
@@ -276,8 +266,6 @@ public:
 	void serialize1() { // Scrie in fisier binar un obiect.
 		ofstream f("Film1.bin", ios::app | ios::binary);
 		if (f.is_open()) {
-			//int y = f.tellp();
-			//cout << y << endl;
 			f.write((char*)&filmId, sizeof(filmId));
 			f.write((char*)&id, sizeof(id));
 			int len = 101;
@@ -301,8 +289,6 @@ public:
 				}
 			}
 			f.write((char*)&start, sizeof(start));
-			//y = f.tellp();
-			//cout << y << endl;
 			f.close();
 		}
 		else {
@@ -312,8 +298,6 @@ public:
 	void serialize1Bilet(string z) { // pentru a serializa in Bilet
 		ofstream f(z, ios::app | ios::binary);
 		if (f.is_open()) {
-			//int y = f.tellp();
-			//cout << y << endl;
 			f.write((char*)&filmId, sizeof(filmId));
 			f.write((char*)&id, sizeof(id));
 			int len = 101;
@@ -337,7 +321,6 @@ public:
 				}
 			}
 			f.write((char*)&start, sizeof(start));
-			//delete[]
 			f.close();
 		}
 		else {
@@ -347,8 +330,6 @@ public:
 	void serialize1BiletLaLoc(string z, int x) { // pentru a serializa in Bilet
 		fstream f(z, ios::out | ios::in | ios::binary);
 		if (f.is_open()) {
-			//int y = f.tellp();
-			//cout << y << endl;
 			f.seekp(x);
 			f.write((char*)&filmId, sizeof(filmId));
 			f.write((char*)&id, sizeof(id));
@@ -373,7 +354,6 @@ public:
 				}
 			}
 			f.write((char*)&start, sizeof(start));
-			//delete[]
 			f.close();
 		}
 		else {
@@ -418,8 +398,6 @@ public:
 		fstream f("Film1.bin", ios::out | ios::in | ios::binary);
 		if (f.is_open()) {
 			f.seekg(x);
-			//int y = f.tellg();
-			//cout << y << endl;
 			f.read((char*)&filmId, sizeof(filmId));
 			f.read((char*)&id, sizeof(id));
 			int len = 0;
@@ -431,7 +409,6 @@ public:
 			f.read((char*)&nrZile, sizeof(nrZile));
 			delete[] zi;
 			zi = new string[nrZile];
-			//string* zi1 = new string[nrZile];
 			for (int i = 0; i < nrZile; i++) {
 				int len1 = 0;
 				f.read((char*)&len1, sizeof(len1));
@@ -448,9 +425,6 @@ public:
 				delete[] aux1;
 			}
 			f.read((char*)&start, sizeof(start));
-			//delete[] aux;
-			//y = f.tellg();
-			//cout << y << endl;
 			f.close();
 		}
 		else {
@@ -546,11 +520,9 @@ public:
 		if (x.filmId <= y.filmId) {
 			cout << "1<=2" << endl;
 			return x.filmId < y.filmId;
-			//return true;
 		}
 		else {
 			return x.filmId >= y.filmId;
-			//return false;
 		}
 	}
 	friend bool operator<(const Film& x, const Film& y) {
@@ -567,7 +539,6 @@ public:
 			return false;
 		}
 	}
-	//////////////////////////////////FA SETTERE PENTRU TOATE ATRIBUTELE////////////////////////
 };
 
 
@@ -635,7 +606,6 @@ istream& operator>>(istream& i, Film& f) { //cin
 	int* arr = arrIdF();
 	int nrFilme();
 	int max = nrFilme();
-	//cout << max << endl;
 	int gasit = 0;
 	int id;
 	char* nume;
@@ -680,7 +650,6 @@ istream& operator>>(istream& i, Film& f) { //cin
 		i >> nrZile;
 	}
 	string* zi = new string[nrZile];
-	//cout << "Zile:";
 	for (int y = 0; y < nrZile; y++) {
 		cout << "Ziua[" << y + 1 << "]: ";
 		i >> zi[y];
@@ -710,9 +679,6 @@ ifstream& operator>>(ifstream& i, Film& f) {
 		const_cast<int&>(f.filmId) = filmId;
 		i >> id;
 		f.setId(id);
-		//i >> ws;
-		//getline(i, nume);
-		//f.setNume(nume);
 		char buffer[101];
 		i.clear();
 		i.ignore(2);
@@ -793,7 +759,6 @@ map<int, Film> citireFilme() { // afiseaza toate filmele din fisier
 			char* aux = new char[len];
 			f.read(aux, len);
 			nume = aux;
-			
 			f.read((char*)&durata, sizeof(durata));
 			f.read((char*)&nrZile, sizeof(nrZile));
 			string* zi = new string[nrZile];
@@ -821,7 +786,6 @@ map<int, Film> citireFilme() { // afiseaza toate filmele din fisier
 				}
 			}
 			x = f.tellg();
-			//delete[] aux;
 			delete[] zi;
 		}
 		return Map;
@@ -833,12 +797,24 @@ map<int, Film> citireFilme() { // afiseaza toate filmele din fisier
 }
 
 void stergeBazaDateFilme1() {
-	ofstream f("Film1.bin", ios::trunc | ios::binary);
-	if (f.is_open()) {
-		f.close();
-	}
-	else {
-		cout << "Eroare la deschiderea fisierului." << endl;
+	int alegere1 = 0;
+	int alegere2 = 0;
+	cout << "Sigur vrei sa stergi baza de date?" << endl;
+	cout << "Alegere: \n\t1)Da\n\t*)Nu" << endl;
+	cin >> alegere1;
+	if (alegere1 == 1) {
+		cout << "Sigur sigur vrei sa stergi baza de date?" << endl;
+		cout << "Alegere: \n\t1)Da\n\t*)Nu" << endl;
+		cin >> alegere2;
+		if (alegere2 == 1) {
+			ofstream f("Film1.bin", ios::trunc | ios::binary);
+			if (f.is_open()) {
+				f.close();
+			}
+			else {
+				cout << "Eroare la deschiderea fisierului." << endl;
+			}
+		}
 	}
 }
 
@@ -852,7 +828,6 @@ void afiseazaFilme() {
 	for (int i = 0; i < Map1.size(); i++) {
 		cout << Map1[i] << endl;
 	}
-	//cout << Film::getNumarFilme() << endl;
 }
 int Film::getNumarFilme() {
 	map<int, Film>Map1 = citireFilme();
@@ -881,7 +856,6 @@ int* returnAtrLoc() { // creaza vector cu locatiile fiecarui atribut al clasei F
 		char* aux = new char[len];
 		f.read(aux, len);
 		nume = aux;
-		//delete[] aux;
 		locDurata = f.tellg();
 		f.read((char*)&durata, sizeof(durata));
 		locNrZile = f.tellg();
@@ -919,7 +893,6 @@ int* returnAtrLoc() { // creaza vector cu locatiile fiecarui atribut al clasei F
 int* arrIdFilme() { // return array cu id-urile filmelor
 	int* arrIdFilme = new int[nrFilme()];
 	const int nrf = nrFilme();
-	//int arrIdFilme[nrf];
 	ifstream f("Film1.bin", ios::binary);
 	if (f.is_open()) {
 		for (int i = 0; i < nrf; i++) {
@@ -939,7 +912,6 @@ int* arrIdFilme() { // return array cu id-urile filmelor
 int* arrIdF() { // return array cu id-urile introduse de la tastatura
 	int* arrIdFilme = new int[nrFilme()];
 	const int nrf = nrFilme();
-	//int arrIdFilme[nrf];
 	ifstream f("Film1.bin", ios::binary);
 	if (f.is_open()) {
 		for (int i = 0; i < nrf; i++) {
@@ -1021,7 +993,6 @@ void inlocuieFilmCuId() { // inlocuie un film cu unul introdus de la tastatura
 		int locatie = 0;
 		int gasit = 0;
 		affArrIdFilme();
-		//cout << endl;
 		cout << "Introdu id-ul filmului pe care vrei sa il inlocuiesti: " << endl;
 		cin >> x1;
 		for (int i = 0; i < 3; i++) {
@@ -1115,7 +1086,6 @@ void schimbaAtributFilm() { //modifica atributul unui film
 	char* nume = nullptr;
 	string nume1 = "";
 	int gasit = 0;
-	//cin >> x1;
 	int* id = arrIdFilme();
 	while (gasit == 0) {
 		cout << endl;
@@ -1123,7 +1093,6 @@ void schimbaAtributFilm() { //modifica atributul unui film
 		for (int i = 0; i < nrFilme(); i++) {
 			if (x1 < 1000000) {
 				gasit = 1;
-				//break;
 			}
 		}
 	}
@@ -1142,7 +1111,6 @@ void schimbaAtributFilm() { //modifica atributul unui film
 		if (strlen(nume) > 0) {
 			o.setNume(nume);
 			o.serialize1(x1);
-			//delete[] nume;
 			break;
 		}
 		else {
@@ -1172,7 +1140,6 @@ void schimbaAtributFilm() { //modifica atributul unui film
 			}
 			o.setZi(y, x4);
 			o.serialize1(x1);
-			//delete[]y;
 			break;
 		}
 		else {
@@ -1191,7 +1158,6 @@ void schimbaAtributFilm() { //modifica atributul unui film
 			cout << "Ora de inceput nu poate fi < 0 sau > 24.";
 			break;
 		}
-	//case 5:
 
 	default:
 		cout << "Alegere invalida." << endl;
@@ -1242,9 +1208,9 @@ void introduFilmInCinema(int h, int b) { // introdu filmul cu id b in cinemaul h
 					f.write((char*)&loc, sizeof(loc));
 					f.close();
 				}
-			}
-			else {
-				cout << "Eroare la deschiderea fisierului.(nu este creat)" << endl;
+				else {
+					cout << "Eroare la deschiderea fisierului.(nu este creat)" << endl;
+				}
 			}
 		}
 	}
@@ -1392,8 +1358,6 @@ void afiseazaFilmInCinema(int h) { // afiseaza id-ul si numarul de locuri libere
 			cout << endl;
 			cout << "Id film: " << id << endl;
 			cout << "Locuri libere: " << loc << endl;
-			//int k = f.tellp();
-			//cout << k << endl;
 			x1 = f.tellg();
 		}
 		f.close();

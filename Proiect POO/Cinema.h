@@ -283,8 +283,6 @@ public:
 	void serializeBilet(string x) { //  pentru a serializa in Bilet.bin
 		ofstream f(x, ios::app | ios::binary);
 		if (f.is_open()) {
-			//int y = f.tellp();
-			//cout << y << endl;
 			f.write((char*)&cinemaId, sizeof(cinemaId));
 			f.write((char*)&id, sizeof(id));
 			int len = 101;
@@ -318,8 +316,6 @@ public:
 	void serializeBiletLaLoc(string x, int z) { //  pentru a serializa in Bilet.bin la o anumita locatie
 		fstream f(x, ios::out | ios::in | ios::binary);
 		if (f.is_open()) {
-			//int y = f.tellp();
-			//cout << y << endl;
 			f.seekp(z);
 			f.write((char*)&cinemaId, sizeof(cinemaId));
 			f.write((char*)&id, sizeof(id));
@@ -426,9 +422,6 @@ public:
 				f.read(aux1, len1);
 				delete[] aux1;
 			}
-			//int u = f.tellg(); // 1062
-			//cout << u << endl;
-			//delete[] aux;
 			f.close();
 		}
 		else {
@@ -584,22 +577,6 @@ istream& operator>>(istream& i, Cinema& c) { //cin
 	string adresa;
 	int nrZile;
 	c.setId(0);
-	//cout << "Id: ";
-	//i >> id;
-	//for (int i = 0; i < max; i++) {
-	//	if (arr[i] == id) {
-	//		gasit = 1;
-	//	}
-	//}
-	//if (id > 0 && gasit == 0) {
-	//	c.setId(id);
-	//}
-	//else {
-	//	cout << "Eroare la introducerea id-ului." << endl;
-	//	cout << "Id-ul trebuie sa fie unic si > 0." << endl;
-	//	c.setId(0);
-	//	gasit = 0;
-	//}
 	while (c.getId() == 0 && gasit == 0) {
 		cout << "Id: ";
 		i >> id;
@@ -730,7 +707,6 @@ set<Cinema> citireCinemauri() {
 		while (x != y) {
 			int cinemaId = 0; int id = 0; char* nume = nullptr;
 			string oras = ""; string adresa = ""; int nrZile = 0;
-			//string* zi;
 			f.read((char*)&cinemaId, sizeof(cinemaId));
 			f.read((char*)&id, sizeof(id));
 			int len = 0;
@@ -738,7 +714,6 @@ set<Cinema> citireCinemauri() {
 			char* aux = new char[len];
 			f.read(aux, len);
 			nume = aux;
-			//
 			f.read((char*)&len, sizeof(len));
 			char* aux1 = new char[len];
 			f.read(aux1, len);
@@ -772,11 +747,9 @@ set<Cinema> citireCinemauri() {
 					Set.insert(placeholder);
 				}
 			}
-			//delete[] aux;
 			delete[] zi;
 			x = f.tellg();
 		}
-		//ordoneazaCinemaId();
 		f.close();
 		return Set;
 	}
@@ -790,10 +763,31 @@ void afiseazaCinemauri() {
 	for (set<Cinema>::iterator i = Set.begin(); i != Set.end();i++) {
 		cout << *i << endl;
 	}
-	//cout << Film::getNumarFilme() << endl;
 }
 
 void stergeBazaDateCinema() {
+	int alegere1 = 0;
+	int alegere2 = 0;
+	cout << "Sigur vrei sa stergi baza de date?" << endl;
+	cout << "Alegere: \n\t1)Da\n\t*)Nu" << endl;
+	cin >> alegere1;
+	if (alegere1 == 1) {
+		cout << "Sigur sigur vrei sa stergi baza de date?" << endl;
+		cout << "Alegere: \n\t1)Da\n\t*)Nu" << endl;
+		cin >> alegere2;
+		if (alegere2 == 1) {
+			ofstream f("Cinema.bin", ios::trunc | ios::binary);
+			if (f.is_open()) {
+				f.close();
+			}
+			else {
+				cout << "Eroare la deschiderea fisierului." << endl;
+			}
+		}
+	}
+}
+
+void stergeBazaDateCinema(int x) {
 	ofstream f("Cinema.bin", ios::trunc | ios::binary);
 	if (f.is_open()) {
 		f.close();
@@ -821,7 +815,6 @@ set<Cinema> returnCinemauri() {
 int* arrIdCinemauri() { // return array cu id-urile cinemaurilor
 	int* arrIdCinemauri = new int[nrCinemauri()];
 	const int nrf = nrCinemauri();
-	//int arrIdFilme[nrf];
 	ifstream f("Cinema.bin", ios::binary);
 	if (f.is_open()) {
 		for (int i = 0; i < nrf; i++) {
@@ -841,7 +834,6 @@ int* arrIdCinemauri() { // return array cu id-urile cinemaurilor
 int* arrIdC() { // return array cu id-urile cinemaurilor introduse de utilizator
 	int* arrId = new int[nrCinemauri()];
 	const int nrf = nrCinemauri();
-	//int arrIdFilme[nrf];
 	ifstream f("Cinema.bin", ios::binary);
 	if (f.is_open()) {
 		for (int i = 0; i < nrf; i++) {
@@ -975,7 +967,6 @@ void inlocuieCinemaCuId() { // inlocuie un cinema cu unul introdus de la tastatu
 		cout << "Alegere: \n\t1)Da\n\t*)Nu" << endl;
 		cin >> sigur;
 		if (sigur == 1) {
-			//cout << endl;
 			cout << "Introdu id-ul cinema-ului pe care vrei sa il inlocuiesti: (Cinema id: )" << endl;
 			cin >> x1;
 			for (int i = 0; i < 3; i++) {
@@ -997,7 +988,6 @@ void inlocuieCinemaCuId() { // inlocuie un cinema cu unul introdus de la tastatu
 				remove(z.c_str());
 				void introduCinema(int);
 				introduCinema(locatie);
-				//ordoneazaCinemaId();
 				cout << "Cinema introdus cu succes." << endl;
 			}
 			else {
@@ -1030,9 +1020,6 @@ void stergeCinema() { // sterge un cinema din fisier
 		int sigur = 0;
 		p = returneazaCinemaCuId(x1);
 		set<Cinema> Set = citireCinemauri();
-		//for (set<Cinema>::iterator i = Set.begin(); i != Set.end(); i++) {
-		//	cout << *i << endl;
-		//}
 		cout << "Esti sigur ca vrei sa stergi cinema-ul cu Id : " << x1 << " ?\nStergerea nu va avea efect pe biletele existente si va sterge baza de date a cinemaului ales." << endl;
 		cout << "\t1)Da\n\t*)Nu\nAlegere: " << endl;
 		cin >> sigur;
@@ -1049,7 +1036,7 @@ void stergeCinema() { // sterge un cinema din fisier
 					break;
 				}
 			}
-			stergeBazaDateCinema();
+			stergeBazaDateCinema(0);
 			for (set<Cinema>::iterator i = Set.begin(); i != Set.end(); i++) {
 				Cinema k;
 				k = *i;
@@ -1067,6 +1054,7 @@ void stergeCinema() { // sterge un cinema din fisier
 }
 
 void schimbaAtributCinema() { //modifica atributul unui cinema
+	afiseazaCinemauri();
 	int atr = 0;
 	int x1 = 0;
 	int x2 = 0;
@@ -1085,9 +1073,28 @@ void schimbaAtributCinema() { //modifica atributul unui cinema
 		cout << "Introdu noul Id: " << endl;
 		cin >> x2;
 		if (x2 > 0) {
-			o.setId(x2);
-			o.serialize(x1);
-			break;
+			int* y = arrIdC();
+			int max = nrCinemauri();
+			int gasit = 0;
+			for (int i = 0; i < max; i++) {
+				if (y[i] == x2) {
+					gasit = 1;
+				}
+			}
+			if (gasit == 0) {
+				int x = 0;
+				string z1 = "cinema" + to_string(o.getId()) + ".bin";
+				string z2 = "cinema" + to_string(x2) + ".bin";
+				o.setId(x2);
+				o.serialize(x1);
+				rename(z1.c_str(), z2.c_str());
+				break;
+			}
+			else {
+				cout << "Id-ul introdus deja exista" << endl;
+				break;
+			}
+
 		}
 		else {
 			cout << "Id-ul nu poate fi < 0." << endl;
@@ -1103,7 +1110,6 @@ void schimbaAtributCinema() { //modifica atributul unui cinema
 		if (strlen(nume) > 0) {
 			o.setNume(nume);
 			o.serialize(x1);
-			//delete[] nume;
 			break;
 		}
 		else {
@@ -1115,7 +1121,6 @@ void schimbaAtributCinema() { //modifica atributul unui cinema
 		char buffer1[101];
 		cin.ignore(1);
 		cin.getline(buffer1, 100);
-		//cin >> x3;
 		if (strlen(buffer1) > 0) {
 			o.setOras(buffer1);
 			o.serialize(x1);
@@ -1150,7 +1155,6 @@ void schimbaAtributCinema() { //modifica atributul unui cinema
 			}
 			o.setZi(y, x5);
 			o.serialize(x1);
-			//delete[] y;
 			break;
 		}
 		else {

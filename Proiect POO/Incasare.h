@@ -490,6 +490,28 @@ map<int, Incasare> returnIncasari() {
 }
 
 void stergeBazaDateIncasari() {
+	int alegere1 = 0;
+	int alegere2 = 0;
+	cout << "Sigur vrei sa stergi baza de date?" << endl;
+	cout << "Alegere: \n\t1)Da\n\t*)Nu" << endl;
+	cin >> alegere1;
+	if (alegere1 == 1) {
+		cout << "Sigur sigur vrei sa stergi baza de date?" << endl;
+		cout << "Alegere: \n\t1)Da\n\t*)Nu" << endl;
+		cin >> alegere2;
+		if (alegere2 == 1) {
+			ofstream f("Incasare.bin", ios::trunc | ios::binary);
+			if (f.is_open()) {
+				f.close();
+			}
+			else {
+				cout << "Eroare la deschiderea fisierului." << endl;
+			}
+		}
+	}
+}
+
+void stergeBazaDateIncasari(int x) {
 	ofstream f("Incasare.bin", ios::trunc | ios::binary);
 	if (f.is_open()) {
 		f.close();
@@ -616,7 +638,7 @@ void stergeIncasare() {
 			}
 			void stergeBilet(int);
 			stergeBilet(x1);
-			stergeBazaDateIncasari();
+			stergeBazaDateIncasari(0);
 			for (map<int, Incasare>::iterator it = I.begin(); it != I.end(); it++) {
 				it->second.serialize();
 			}

@@ -32,9 +32,6 @@
     <ClInclude Include="Incasare.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Istoric.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Cinema.h">
       <Filter>Header Files</Filter>
     </ClInclude>

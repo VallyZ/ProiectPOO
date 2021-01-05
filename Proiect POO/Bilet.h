@@ -241,7 +241,6 @@ public:
 			int siguranta = 0;
 			for (int i = 0; i < 4; i++) {
 				if (persoane != nullptr) {
-
 					if (persoane[i].length() != 0 && persoane[i].length() < 20 && siguranta == 0) {
 						f.write((char*)&len1, sizeof(len1));
 						f.write(persoane[i].c_str(), len1);
@@ -350,8 +349,6 @@ public:
 				}
 			}
 			delete[] zi1;
-			//int y = f.tellg();
-			//cout << "Locatie id: " << y << endl;
 
 			f.read((char*)&id, sizeof(id));
 			len = 0;
@@ -769,6 +766,28 @@ map<int, Bilet> returnBilete() {
 }
 
 void stergeBazaDateBilete() {
+	int alegere1 = 0;
+	int alegere2 = 0;
+	cout << "Sigur vrei sa stergi baza de date?" << endl;
+	cout << "Alegere: \n\t1)Da\n\t*)Nu" << endl;
+	cin >> alegere1;
+	if (alegere1 == 1) {
+		cout << "Sigur sigur vrei sa stergi baza de date?" << endl;
+		cout << "Alegere: \n\t1)Da\n\t*)Nu" << endl;
+		cin >> alegere2;
+		if (alegere2 == 1) {
+			ofstream f("Bilet.bin", ios::trunc | ios::binary);
+			if (f.is_open()) {
+				f.close();
+			}
+			else {
+				cout << "Eroare la deschiderea fisierului." << endl;
+			}
+		}
+	}
+}
+
+void stergeBazaDateBilete(int x) {
 	ofstream f("Bilet.bin", ios::trunc | ios::binary);
 	if (f.is_open()) {
 		f.close();
@@ -897,7 +916,7 @@ void stergeBilet() {
 			}
 			void stergeIncasare(int);
 			stergeIncasare(x1);
-			stergeBazaDateBilete();
+			stergeBazaDateBilete(0);
 			for (map<int, Bilet>::iterator it = B.begin(); it != B.end(); it++) {
 				it->second.serialize1();
 			}
@@ -945,18 +964,14 @@ void stergeBilet(int x1) { // sterge bilet cand sterge incasare
 void introduBilet() {
 	Bilet b;
 	cin >> b;
-	//string z = b.getNume();
 	if (b.getNume()!=nullptr) {
 		b.serialize1();
 		ordoneazaBiletId();
-		//void introduSiSerializeazaBilet(Bilet);
-		//introduSiSerializeazaBilet(b);
 		int* x = new int[b.getNrPersoane() + 1];
 		for (int j = 0; j < b.getNrPersoane() + 1; j++) {
 			x[j] = 100;
 		}
 		Incasare i(nrBilete(), b.getNume(), b.getNrPersoane() + 1, x);
-		//cout << i << endl;
 		i.serialize();
 	}
 	else {

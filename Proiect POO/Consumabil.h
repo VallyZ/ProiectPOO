@@ -15,7 +15,6 @@ private:
 	int id;
 	char* nume;
 	string um;
-	//int cant;
 	int nrTopinguri;
 	string* toping;
 	static int numarConsumabile;
@@ -144,7 +143,7 @@ public:
 			delete[] toping;
 		}
 	}
-	static int getNumarConsumabile() {//////////////static int getNumarConsumabile();//////////////////////////////////////////////////////////
+	static int getNumarConsumabile() {
 		return numarConsumabile;
 	}
 	int getConsumabilId() {
@@ -304,7 +303,6 @@ public:
 			char* aux = new char[len];
 			f.read(aux, len);
 			nume = aux;
-			//delete[] aux;
 			int len1 = 0;
 			f.read((char*)&len1, sizeof(len1));
 			char* aux1 = new char[len1];
@@ -332,8 +330,6 @@ public:
 				f.read(aux1, len1);
 				delete[] aux1;
 			}
-			//int y = f.tellg();// 747
-			//cout << y << endl;
 			f.close();
 		}
 		else {
@@ -401,7 +397,6 @@ public:
 		return nrTopinguri > 0;
 	}
 
-
 	friend ostream& operator<<(ostream&, Consumabil);
 	friend ofstream& operator<<(ofstream&, Consumabil);
 	friend istream& operator>>(istream&, Consumabil&);
@@ -421,7 +416,6 @@ public:
 			return false;
 		}
 	}
-
 };
 
 int Consumabil::numarConsumabile = 0;
@@ -479,17 +473,37 @@ ofstream& operator<<(ofstream& o, Consumabil c) {
 	return o;
 }
 istream& operator>>(istream& i, Consumabil& c) { //cin
+	int* arrIdConsum();
+	int* x1 = arrIdConsum();
+	int nrConsumabile();
+	int max = nrConsumabile();
+	void affArrIdConsum();
+	affArrIdConsum();
+	int gasit = 0;
 	int id;
 	char* nume;
 	string um;
 	int nrTopinguri;
 	cout << "Id: ";
 	i >> id;
-	if (id > 0) {
-		c.setId(id);
-	}
-	else {
-		c.setId(0);
+	c.setId(0);
+	while (c.getId() == 0 && gasit == 0) {
+		cout << "Id: ";
+		i >> id;
+		for (int i = 0; i < max; i++) {
+			if (x1[i] == id) {
+				gasit = 1;
+			}
+		}
+		if (id > 0 && gasit == 0) {
+			c.setId(id);
+		}
+		else {
+			cout << "Eroare la introducerea id-ului." << endl;
+			cout << "Id-ul trebuie sa fie unic si > 0." << endl;
+			c.setId(0);
+			gasit = 0;
+		}
 	}
 	cout << "Nume: ";
 	char buffer[101];
@@ -596,7 +610,6 @@ list<Consumabil> citireConsumabile() {
 		while (x != y) {
 			int consumabilId = 0; int id = 0; char* nume = nullptr;
 			string um = ""; int nrTopinguri = 0;
-			//string* zi;
 			f.read((char*)&consumabilId, sizeof(consumabilId));
 			f.read((char*)&id, sizeof(id));
 			int len = 0;
@@ -604,7 +617,6 @@ list<Consumabil> citireConsumabile() {
 			char* aux = new char[len];
 			f.read(aux, len);
 			nume = aux;
-			//delete[] aux;
 			f.read((char*)&len, sizeof(len));
 			char* aux1 = new char[len];
 			f.read(aux1, len);
@@ -652,7 +664,59 @@ void afiseazaConsumabile() {
 	}
 }
 
+int* arrIdConsum() {
+	int* x = new int[nrConsumabile()];
+	int max = nrConsumabile();
+	ifstream f("Consumabil.bin", ios::binary);
+	if (f.is_open()) {
+		for (int i = 0; i < max; i++) {
+			int y = 0;
+			f.seekg(i * 747);
+			f.read((char*)&y, sizeof(y));
+			f.read((char*)&y, sizeof(y));
+			x[i] = y;
+		}
+		f.close();
+		return x;
+	}
+	else {
+		cout << "Eroare la deschiderea fisierului." << endl;
+	}
+}
+
+void affArrIdConsum() {
+	int* x = arrIdConsum();
+	int max = nrConsumabile();
+	cout << "Exista urmatoarele consumabile cu id: " << endl;
+	for (int i = 0; i < max; i++) {
+		cout << x[i] << " ";
+	}
+	cout << endl;
+}
+
 void stergeBazaDateConsumabil() {
+	int alegere1 = 0;
+	int alegere2 = 0;
+	cout << "Sigur vrei sa stergi baza de date?" << endl;
+	cout << "Alegere: \n\t1)Da\n\t*)Nu" << endl;
+	cin >> alegere1;
+	if (alegere1 == 1) {
+		cout << "Sigur sigur vrei sa stergi baza de date?" << endl;
+		cout << "Alegere: \n\t1)Da\n\t*)Nu" << endl;
+		cin >> alegere2;
+		if (alegere2 == 1) {
+			ofstream f("Consumabil.bin", ios::trunc | ios::binary);
+			if (f.is_open()) {
+				f.close();
+			}
+			else {
+				cout << "Eroare la deschiderea fisierului." << endl;
+			}
+		}
+	}
+}
+
+void stergeBazaDateConsumabil(int x) {
 	ofstream f("Consumabil.bin", ios::trunc | ios::binary);
 	if (f.is_open()) {
 		f.close();
@@ -660,6 +724,7 @@ void stergeBazaDateConsumabil() {
 	else {
 		cout << "Eroare la deschiderea fisierului." << endl;
 	}
+
 }
 
 list<Consumabil> returnConsumabile() {
@@ -840,23 +905,18 @@ void stergeConsumabil() { // sterge un cinema din fisier
 		cout << "\t1)Da\n\t*)Nu\nAlegere: " << endl;
 		cin >> sigur;
 		if (sigur == 1) {
-			//list<Consumabil>::iterator i;
-			//List.remove_if(i == find(List.begin(), List.end(), p);
 			Consumabil l;
-			
 			for (list<Consumabil>::iterator i = List.begin(); i != List.end(); i++) {
 				l = *i;
-				//cout << l << endl;
 				if (l.getConsumabilId() == x1) {
 					cout << "Consumabil sters cu succes" << endl;
 					List.erase(i);
 					break;
 				}
 			}
-			stergeBazaDateConsumabil();
+			stergeBazaDateConsumabil(0);
 			Consumabil k;
 			for (list<Consumabil>::iterator i = List.begin(); i != List.end(); i++) {
-				
 				k = *i;
 				k.serialize();
 			}
@@ -919,7 +979,6 @@ void schimbaAtributConsumabil() { //modifica atributul unui consumabil
 		char buffer1[101];
 		cin.ignore(1);
 		cin.getline(buffer1, 100);
-		//cin >> x3;
 		if (strlen(buffer1) > 0) {
 			o.setUm(buffer1);
 			o.serialize(x1);
@@ -954,5 +1013,17 @@ void schimbaAtributConsumabil() { //modifica atributul unui consumabil
 		}
 	default:
 		cout << "Alegere invalida." << endl;
+	}
+}
+
+void introduConsumabil() {
+	Consumabil c;
+	cin >> c;
+	if (c.getId() != 0) {
+		c.serialize();
+		ordoneazaConsumabilId();
+	}
+	else {
+		cout << "Consumabilul nu a fost introdus." << endl;
 	}
 }
